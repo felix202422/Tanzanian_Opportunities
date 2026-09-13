@@ -7,13 +7,13 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
+import { profileApi } from '@/services/api/profileApi';
 import { ProfileUpdateData } from '@/types/profile';
-import { User } from '@/types/user';
 import { Save, Loader2 } from 'lucide-react';
 
 export const ProfileEdit: React.FC = () => {
   const { t } = useTranslation();
-  const { updateUser } = useAuth();
+  const { refreshUser } = useAuth();
   const { profileData } = useProfile();
   const profile = (profileData || {}) as Record<string, string | undefined>;
   const [success, setSuccess] = useState(false);
@@ -31,7 +31,8 @@ export const ProfileEdit: React.FC = () => {
 
   const onSubmit = async (data: ProfileUpdateData) => {
     try {
-      await updateUser(data as unknown as Partial<User>);
+      await profileApi.updateProfile(data);
+      await refreshUser();
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch {
@@ -42,12 +43,12 @@ export const ProfileEdit: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-slide-up">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('profile.edit')}</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('profile.settings')}</p>
+        <h1 className="text-2xl font-bold text-tdop-navy">{t('profile.edit')}</h1>
+        <p className="text-sm text-gray-500 mt-1">{t('profile.settings')}</p>
       </div>
 
       {success && (
-        <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-sm text-green-600">
+        <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-600">
           Profile updated successfully!
         </div>
       )}
