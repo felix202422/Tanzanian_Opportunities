@@ -638,9 +638,74 @@ Users may compare:
 
 ```
 PREPARING → SUBMITTED → UNDER_REVIEW → SHORTLISTED → INTERVIEW → ACCEPTED
-                                                               → REJECTED
-                                                               → WITHDRAWN
+                                                                → REJECTED
+                                                                → WITHDRAWN
 ```
+
+### Application Ownership & Access
+
+**Ownership:**
+
+- Application belongs to the applicant (USER)
+- Organization can view applications for their opportunities
+- Organization members see applications based on role
+
+**Access Rules:**
+
+| Actor | Access |
+|---|---|
+| Applicant | Own applications, withdraw |
+| Organization Admin | All applications for org opportunities |
+| Organization Member | Applications for assigned opportunities |
+| Moderator | Any application for investigation |
+| Admin | Any application for platform support |
+
+**Candidate-Data Protection:**
+
+- Applicant personal data visible only to authorized org members
+- Internal notes never visible to applicant
+- Document access requires explicit permission
+- Application data retained per retention policy
+
+### Application Timeline
+
+**Status History:**
+
+Every status change recorded with:
+
+- Previous status
+- New status
+- Changed by (user ID)
+- Timestamp
+- Reason (optional, required for REJECTED)
+
+**Timeline Display:**
+
+```
+Applied (Jan 15)
+  → Under Review (Jan 16)
+  → Shortlisted (Jan 20)
+  → Interview Scheduled (Jan 25)
+  → Accepted (Jan 28)
+```
+
+### Withdrawal Rules
+
+- Applicant can withdraw from PREPARING, SUBMITTED, UNDER_REVIEW statuses
+- Cannot withdraw after SHORTLISTED (organization has invested time)
+- Cannot withdraw after ACCEPTED/REJECTED
+- Withdrawal is immediate, no confirmation required
+- Organization notified of withdrawal
+- Application preserved in history with WITHDRAWN status
+
+### Application Validation Rules
+
+- Application requires: opportunity ID, applicant ID
+- Cover letter: optional, max 5000 characters
+- Resume URL: optional if user has CV on profile
+- Duplicate prevention: one application per user per opportunity
+- Opportunity must be PUBLISHED or CLOSING_SOON to apply
+- Applicant must have active account (not banned/suspended)
 
 ---
 
@@ -705,6 +770,55 @@ Start with explainable rules.
 Every recommendation should eventually explain:
 
 > "Why am I seeing this?"
+
+### Matching Algorithm v1 (Rule-Based)
+
+**Score Components:**
+
+| Factor | Weight | Data Source | Calculation |
+|---|---|---|---|
+| Eligibility Match | 30% | Opportunity rules vs Profile | % rules satisfied |
+| Skills Match | 25% | User skills vs Required skills | Overlap ratio |
+| Education Match | 15% | User education vs Required level | Level comparison |
+| Career Goal Alignment | 15% | User goals vs Category/type | Category match |
+| Location Match | 10% | User location vs Opportunity location | Exact/remote match |
+| Interest Match | 5% | User interests vs Tags | Overlap ratio |
+
+**Scoring Rules:**
+
+- Score range: 0-100
+- Minimum threshold: 20 (below = not recommended)
+- High relevance: 70+
+- Medium relevance: 40-69
+- Low relevance: 20-39
+
+**Recommendation Set:**
+
+- Maximum 50 recommendations per user
+- Refresh frequency: daily (configurable)
+- Recalculate on profile update
+- Recalculate on opportunity publish
+
+**Explainability:**
+
+Every recommendation must include:
+
+- Overall score
+- Top 3 matching factors
+- Missing factors (if any)
+- Example: "85% match - Strong skills match, Meets education requirement, Location: Remote"
+
+**Diversity Rules:**
+
+- Maximum 3 opportunities from same category
+- Mix of opportunity types (job, scholarship, etc.)
+- Fresh opportunities prioritized (published < 30 days)
+
+**Feedback Mechanism:**
+
+- Users can mark recommendations as relevant/irrelevant
+- Feedback improves future recommendations
+- Track save/apply from recommendations
 
 ---
 
@@ -1041,6 +1155,103 @@ Developer 02 owns:
 - [ ] Ownership checks.
 - [ ] Audit.
 
+### Role Definitions
+
+| Role | Opportunity Access | Candidate Access | Team Management | Settings |
+|---|---|---|---|---|
+| ORG_ADMIN | Full | Full | Full | Full |
+| ORG_MEMBER | Assigned only | Assigned only | View | View |
+
+### Opportunity Access Rules
+
+**ORG_ADMIN:**
+
+- Create, edit, delete any opportunity
+- Submit, publish, suspend, archive any opportunity
+- View all applications for all opportunities
+
+**ORG_MEMBER:**
+
+- Create opportunities (draft only)
+- Edit assigned opportunities
+- View applications for assigned opportunities
+- Cannot publish, suspend, or archive
+
+### Candidate/Application Access Rules
+
+**ORG_ADMIN:**
+
+- View all candidates for all opportunities
+- View all applications
+- Update application status
+- Add internal notes
+- Export candidate data
+
+**ORG_MEMBER:**
+
+- View candidates for assigned opportunities only
+- View applications for assigned opportunities only
+- Update status with limits (cannot ACCEPT)
+- Add internal notes
+
+### Invitation Rules
+
+**Who Can Invite:**
+
+- ORG_ADMIN only
+
+**Invitation Limits:**
+
+- Maximum 50 pending invitations per organization
+- Invitation expires after 7 days (configurable)
+- Re-invitation allowed after expiry
+
+**Invitation Process:**
+
+1. Admin sends invitation (email required)
+2. Invitee receives email with link
+3. Invitee creates account or logs in
+4. Invitee accepts invitation
+5. Member added to organization
+
+### Role Change Rules
+
+**Who Can Change Roles:**
+
+- ORG_ADMIN only
+- Cannot change own role (prevent accidental demotion)
+- Cannot promote above own role level
+
+**Role Change Process:**
+
+1. Admin selects member
+2. Admin selects new role
+3. Confirmation required
+4. Role change recorded in audit
+5. Member notified
+
+### Removal/Revocation Rules
+
+**Who Can Remove:**
+
+- ORG_ADMIN only
+- Cannot remove self (must transfer ownership first)
+
+**Removal Process:**
+
+1. Admin selects member
+2. Confirmation required
+3. Member removed immediately
+4. Member's access revoked
+5. Member notified
+6. Audit recorded
+
+**Revocation:**
+
+- Invitations can be revoked before acceptance
+- Revoked invitations marked as CANCELLED
+- Audit recorded
+
 ---
 
 ## 37. Dev 02 — Opportunity Engine
@@ -1050,13 +1261,60 @@ Developer 02 owns:
 **Opportunity lifecycle:**
 
 ```
-DRAFT → VALIDATION → SUBMITTED → VERIFICATION → MODERATION
+DRAFT → SUBMITTED → UNDER_REVIEW → VERIFIED → MODERATION
       → APPROVED → PUBLISHED → CLOSING SOON → EXPIRED → ARCHIVED
 ```
 
 **Exceptional states:**
 
 `REJECTED` · `SUSPENDED` · `WITHDRAWN`
+
+### Transition Rules
+
+| From | To | Allowed Actor | Condition |
+|---|---|---|---|
+| DRAFT | SUBMITTED | Organization Owner/Admin | Required fields complete |
+| SUBMITTED | UNDER_REVIEW | Verification Officer | Auto-queue or manual |
+| UNDER_REVIEW | VERIFIED | Verification Officer | Evidence approved |
+| UNDER_REVIEW | REJECTED | Verification Officer | Reason required |
+| VERIFIED | MODERATION | Moderator | Auto-queue or manual |
+| MODERATION | APPROVED | Moderator | Content approved |
+| MODERATION | REJECTED | Moderator | Reason required |
+| APPROVED | PUBLISHED | Organization Owner/Admin | Deadline set |
+| PUBLISHED | CLOSING_SOON | System | Deadline within threshold |
+| CLOSING_SOON | EXPIRED | System | Deadline passed |
+| PUBLISHED/EXPIRED | ARCHIVED | Organization/Admin/System | Manual or auto |
+| Any active | SUSPENDED | Admin/Moderator | Policy violation |
+| SUSPENDED | PUBLISHED | Admin | After review |
+| ARCHIVED | PUBLISHED | Organization Admin | Re-activated |
+
+### Publishing Rules
+
+- Opportunity must be APPROVED before PUBLISHED
+- Deadline must be set and in the future
+- Organization should be verified (recommended, not blocking for P0)
+- Title, description, and application method required
+
+### Expiration Behavior
+
+- System checks hourly (configurable)
+- Expired opportunities: status → EXPIRED, removed from active listings
+- Applications may still be processed for expired opportunities
+- Organization can extend deadline before expiration
+
+### Suspension Rules
+
+- Admin/Moderator can suspend with reason
+- Suspended opportunities: hidden from discovery, existing applications preserved
+- Organization notified of suspension
+- Suspension reason recorded in audit
+
+### Restoration Rules
+
+- Suspended opportunities can be restored to PUBLISHED
+- Restoration requires admin approval
+- Restoration reason recorded
+- Organization notified of restoration
 
 ---
 
@@ -1088,6 +1346,66 @@ Opportunity should support:
 - Updated date.
 - Last verified date.
 - Expiry.
+
+### Source & Provenance Fields
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| sourceType | ENUM | Yes | MANUAL, IMPORTED, API, RSS, PARTNER |
+| sourceName | String | Yes | Original publisher name |
+| sourceUrl | URL | No | Original source URL |
+| sourceReferenceId | String | No | External ID from source |
+| sourceVerified | Boolean | No | Whether source has been verified |
+| sourceLastChecked | DateTime | No | When source was last verified |
+| sourceCredibility | ENUM | No | UNVERIFIED, BASIC, VERIFIED, TRUSTED |
+| importedAt | DateTime | No | When imported (if not manual) |
+| importedBy | Reference | No | Who/what imported |
+
+### Source Verification Rules
+
+- Manual opportunities: sourceName required, sourceType = MANUAL
+- Imported opportunities: sourceName, sourceUrl, importedAt required
+- Source credibility updates based on organization verification status
+- Stale sources flagged for re-verification
+
+### Structured Eligibility Rules
+
+**Rule Types:**
+
+| Rule Type | Operator | Value | Example |
+|---|---|---|---|
+| EDUCATION | EQUALS, MINIMUM, ANY_OF | Education level | MINIMUM: DIPLOMA |
+| SKILL | CONTAINS, ANY_OF | Skill names | ANY_OF: JavaScript, Python |
+| EXPERIENCE | MINIMUM, RANGE | Years | MINIMUM: 2 |
+| LOCATION | EQUALS, ANY_OF, NOT_IN | Country/Region | ANY_OF: Tanzania, Kenya |
+| AGE | MINIMUM, MAXIMUM, RANGE | Years | MAXIMUM: 35 |
+| RESIDENCY | EQUALS, ANY_OF | Nationality | ANY_OF: Tanzanian |
+| DOCUMENT | REQUIRED, OPTIONAL | Document type | REQUIRED: CV, Certificate |
+| CUSTOM | TEXT_MATCH | Freeform | "Must be female" (with reason) |
+
+**Rule Storage:**
+
+- Rules stored as JSON array on opportunity
+- Example: `[{"type":"SKILL","operator":"ANY_OF","values":["Java","Python"]}]`
+
+**Extensibility:**
+
+- New rule types added via configuration
+- Custom rules supported with text matching
+- Rule evaluation engine pluggable
+
+**Explainability:**
+
+- Each recommendation shows which rules matched
+- Users see: "You match 4 of 5 requirements"
+- Missing requirements listed clearly
+- Example: "Missing: 2+ years experience"
+
+**Validation:**
+
+- Backend validates eligibility on application
+- Mismatches flagged but not blocking (warning)
+- Organization can override eligibility check
 
 ---
 
@@ -1186,6 +1504,111 @@ Organization → Verification Request → Documents → Verification Queue → R
 - [ ] Reason capture.
 - [ ] Status.
 
+### Complete Verification Lifecycle
+
+```
+SUBMITTED → UNDER_REVIEW → APPROVED/REJECTED/REQUEST_INFO
+               ↓
+        RE_VERIFICATION
+               ↓
+        SUSPENDED/EXPIRED
+               ↓
+        RESTORED
+```
+
+**States:**
+
+- SUBMITTED: Initial verification request
+- UNDER_REVIEW: Assigned to verification officer
+- APPROVED: Organization verified
+- REJECTED: Verification denied (reason required)
+- REQUEST_INFO: Additional information needed
+- SUSPENDED: Verification revoked (violation)
+- EXPIRED: Verification period lapsed
+- RESTORED: Re-activated after suspension/expiry
+- RE_VERIFICATION: Under review for renewal
+
+### Evidence Requirements
+
+**Required Documents:**
+
+- Business registration certificate
+- Tax identification number
+- Proof of address (utility bill, bank statement)
+- Organization description
+- Contact information verification
+
+**Optional/Recommended:**
+
+- Website verification
+- Social media presence
+- Previous opportunities published
+- References
+
+**Document Validation:**
+
+- File type: PDF, JPG, PNG
+- File size: max 10MB
+- Documents must be current (within 12 months)
+- Expired documents trigger re-verification
+
+### Reviewer Accountability
+
+**Assignment:**
+
+- Verification requests assigned to specific officer
+- Officer cannot verify own organization
+- Conflict of interest: reassign to different officer
+
+**Review Requirements:**
+
+- Decision required within 7 days (configurable)
+- Reviewer must provide reason for REJECT
+- Reviewer must provide specific info request for REQUEST_INFO
+- Escalation path for complex cases
+
+**Quality:**
+
+- Random audit of verification decisions
+- Appeal process for rejected organizations
+- Reviewer performance metrics
+
+### Reasons & Audit History
+
+**Required Reason Fields:**
+
+- REJECTED: reason (text, required)
+- REQUEST_INFO: specific information needed (text, required)
+- SUSPENDED: reason and evidence reference (text, required)
+
+**Audit Trail:**
+
+Every verification action records:
+
+- WHO (reviewer ID)
+- DID WHAT (action)
+- TO WHICH ENTITY (organization ID)
+- WHEN (timestamp)
+- RESULT/CHANGE (status change)
+- REASON/CONTEXT (reason text)
+
+### Re-verification Rules
+
+**Triggers:**
+
+- Annual re-verification (configurable)
+- Document expiry
+- Organization profile changes
+- Complaints/reports received
+- Random audit selection
+
+**Process:**
+
+- Re-verification follows same review process
+- Previous verification history visible to reviewer
+- Fast-track for minor updates
+- Full review for major changes
+
 ---
 
 ## 43. Verification Officer Dashboard
@@ -1226,6 +1649,39 @@ Include:
 
 > Every action should be auditable.
 
+### Spam & Abuse Detection
+
+**Signals:**
+
+- Multiple opportunities with identical/similar content
+- Rapid opportunity creation (10+ in 24 hours)
+- Copy-pasted descriptions from external sources
+- URL patterns associated with spam
+- Keyword patterns (excessive caps, suspicious phrases)
+
+**Actions:**
+
+- Auto-flag for review
+- Rate limiting on opportunity creation
+- Temporary suspension for repeat offenders
+- Permanent ban for confirmed spam accounts
+
+### Duplicate Content Detection
+
+**Detection:**
+
+- Hash-based exact duplicate detection
+- Fuzzy matching for near-duplicates (>80% similarity)
+- Cross-organization duplicate detection
+- Source URL duplicate detection
+
+**Handling:**
+
+- First published = canonical
+- Duplicates flagged for moderator review
+- Moderator decides: keep, archive, or delete
+- Audit trail for all decisions
+
 ---
 
 ## 45. Dev 02 — Reporting System
@@ -1250,6 +1706,69 @@ Users should be able to report:
 REPORT → QUEUE → INVESTIGATION → DECISION → ACTION → AUDIT
 ```
 
+### Investigation Workflow
+
+**Process:**
+
+```
+REPORT/DETECTION → QUEUE → ASSIGN → INVESTIGATE → DECIDE → ACTION → AUDIT
+```
+
+**Investigation Steps:**
+
+1. Review report/detection details
+2. Gather evidence (opportunity data, user history, organization history)
+3. Interview parties if needed
+4. Document findings
+5. Make decision
+6. Execute action
+7. Record audit
+
+**Evidence Gathering:**
+
+- Opportunity history
+- User account history
+- Organization verification status
+- Similar reports
+- External source verification
+
+### Escalation Rules
+
+**Escalation Triggers:**
+
+- High-risk fraud signals
+- Multiple reports on same target
+- Legal implications
+- Public safety concerns
+- Repeat offender
+
+**Escalation Path:**
+
+- Moderator → Senior Moderator → Admin → Super Admin
+- Each level has 24-hour SLA (configurable)
+- Escalation recorded in audit
+
+### Resolution Tracking
+
+**Resolution States:**
+
+- PENDING: Under investigation
+- RESOLVED_NO_ACTION: No violation found
+- RESOLVED_WARNING: Warning issued
+- RESOLVED_SUSPENDED: Account/opportunity suspended
+- RESOLVED_BANNED: Account banned
+- RESOLVED_ARCHIVED: Content archived
+- ESCALATED: Moved to higher authority
+- CLOSED: Investigation complete
+
+**Resolution Details:**
+
+- Action taken
+- Reason for decision
+- Evidence reference
+- Follow-up required
+- Appeal deadline
+
 ---
 
 ## 46. Dev 02 — Anti-Fraud
@@ -1271,6 +1790,58 @@ REPORT → QUEUE → INVESTIGATION → DECISION → ACTION → AUDIT
 **Possible risk levels:** `LOW` · `MEDIUM` · `HIGH`
 
 > Risk scoring should support human review. It should **NOT** automatically accuse a person or organization without evidence.
+
+---
+
+## 46A. Dev 02 — Duplicate Opportunity Control
+
+**Priority:** P1
+
+### Detection Signals
+
+- Same title + same organization (exact match)
+- Similar title + similar description (fuzzy match)
+- Same source URL
+- Same application URL
+- Similar deadline + location + category
+
+### Detection Timing
+
+- On opportunity submission
+- On opportunity update
+- Scheduled batch detection (daily)
+
+### Flagging Rules
+
+- Exact matches: AUTO_FLAGGED
+- Fuzzy matches above threshold: SUGGESTED_REVIEW
+- Duplicates shown in moderation queue with similarity score
+
+### Review Process
+
+- Moderator reviews flagged duplicates
+- Options: KEEP_BOTH, MERGE, ARCHIVE_DUPLICATE, RESTORE
+- Decision recorded with reason
+
+### Canonical/Primary Opportunity
+
+- First published opportunity = canonical (default)
+- Can be reassigned by moderator
+- Canonical opportunity survives merge
+- Non-canonical archived or deleted
+
+### Merge Rules
+
+- Applications merged to canonical
+- Status history preserved from both
+- Audit trail records merge
+- Organizations notified
+
+### Audit History
+
+- All duplicate decisions logged
+- WHO decided, WHAT action, WHEN, WHY
+- Reverse action possible (unmerge within retention period)
 
 ---
 
@@ -1377,6 +1948,34 @@ Organization analytics may include:
 
 Expired opportunities should not remain presented as active opportunities.
 
+### Deadline Validation Rules
+
+- Deadline must be in the future when publishing
+- Deadline cannot be extended past 1 year from now
+- Deadline changes after publishing require audit log entry
+- Past deadlines prevent new applications
+
+### Timezone Handling
+
+- All deadlines stored in UTC
+- Display in user's local timezone
+- Organization deadline display in org timezone
+- System checks use UTC
+
+### Stale Opportunity Detection
+
+- Opportunities not updated in 90 days flagged as potentially stale
+- Opportunities with broken source URLs flagged
+- Stale opportunities require re-verification
+- Stale flag visible to users with explanation
+
+### Re-verification Rules
+
+- Verified opportunities re-verified annually (configurable)
+- Source changes trigger re-verification
+- Organization status changes trigger re-verification
+- Re-verification failure → SUSPENDED with reason
+
 ---
 
 ## 52. Dev 02 — Audit Log
@@ -1405,6 +2004,93 @@ Expired opportunities should not remain presented as active opportunities.
 - Configuration changes.
 
 > Do not log sensitive personal information unnecessarily.
+
+### Audit Record Format
+
+Every audit entry must capture:
+
+| Field | Description | Example |
+|---|---|---|
+| WHO | Actor (user ID + role) | user:123 (ADMIN) |
+| DID WHAT | Action performed | CREATED, UPDATED, DELETED, APPROVED, REJECTED |
+| TO WHICH ENTITY | Target entity type + ID | opportunity:456 |
+| WHEN | Timestamp (UTC) | 2025-01-15T10:30:00Z |
+| RESULT/CHANGE | Before/after state | status: DRAFT → PUBLISHED |
+| REASON/CONTEXT | Reason for action | "Content approved after review" |
+| SOURCE/IP | Request source | IP: 192.168.1.1 |
+
+### Audit Coverage Requirements
+
+**Security:**
+
+- Login attempts (success/failure)
+- Password changes
+- Role changes
+- Permission changes
+- Account lockouts
+
+**Organizations:**
+
+- Organization created/updated/deleted
+- Verification submitted/approved/rejected
+- Team member added/removed/role changed
+- Settings changed
+
+**Opportunities:**
+
+- Opportunity created/updated/deleted
+- Status changes (all transitions)
+- Verification/moderation actions
+- Publishing/suspension/archival
+- Deadline changes
+
+**Applications:**
+
+- Application created/withdrawn
+- Status changes
+- Shortlisting
+- Notes added
+- Document access
+
+**Verification:**
+
+- Verification request submitted
+- Documents uploaded
+- Review assigned
+- Decision made
+- Re-verification triggered
+
+**Moderation:**
+
+- Report submitted
+- Investigation assigned
+- Decision made
+- Action taken
+- Escalation
+
+**Administrative:**
+
+- Configuration changes
+- User bans/unbans
+- Data exports
+- System changes
+
+### Audit Log Retention
+
+- Security logs: 7 years
+- Organization logs: 5 years
+- Opportunity logs: 5 years
+- Application logs: 5 years
+- Verification logs: 5 years
+- Moderation logs: 7 years
+- Administrative logs: 7 years
+
+### Audit Integrity
+
+- Audit logs immutable (append-only)
+- No deletion of audit records
+- Audit logs stored separately from application data
+- Backup audit logs to separate storage
 
 ---
 
@@ -1562,6 +2248,81 @@ Delivery
 
 > Not every channel must exist in the first release. The architecture should allow future channels.
 
+### Event-Driven Notifications
+
+**Notification Events:**
+
+| Event | Trigger | Channel | Audience |
+|---|---|---|---|
+| APPLICATION_SUBMITTED | Application created | In-App, Email | Applicant, Org |
+| APPLICATION_STATUS_CHANGED | Status updated | In-App, Email | Applicant |
+| DEADLINE_REMINDER | Scheduled | In-App, Email | Saved users, Applicants |
+| OPPORTUNITY_PUBLISHED | Status → PUBLISHED | In-App | Subscribers |
+| OPPORTUNITY_CLOSING_SOON | Status → CLOSING_SOON | In-App | Saved users |
+| VERIFICATION_RESULT | Verification complete | In-App, Email | Organization |
+| MODERATION_ACTION | Moderation decision | In-App | Organization |
+| TEAM_INVITATION | Invitation sent | In-App, Email | Invitee |
+| SECURITY_ALERT | Suspicious activity | In-App, Email | Affected user |
+
+### Background Job Requirements
+
+**Scheduled Jobs:**
+
+- Deadline processing: hourly
+- Stale opportunity detection: daily
+- Re-verification checks: weekly
+- Notification digest: configurable
+- Analytics aggregation: daily
+
+**Job Execution:**
+
+- Jobs run independently, not blocking API
+- Job failures logged, not silently swallowed
+- Retry mechanism: 3 attempts with exponential backoff
+- Job timeout: configurable per job type
+
+### Retry & Failure Handling
+
+**Notification Delivery:**
+
+- In-App: immediate, retry on failure (3 attempts)
+- Email: immediate, retry on failure (3 attempts)
+- SMS: immediate, retry on failure (2 attempts)
+- Push: immediate, no retry (best effort)
+
+**Job Failures:**
+
+- Failed jobs logged with error details
+- Alert on repeated failures (3+ consecutive)
+- Dead letter queue for permanently failed jobs
+- Admin dashboard shows failed jobs
+
+### Idempotency
+
+**Rules:**
+
+- Notification creation idempotent (same event = same notification)
+- Use event ID to prevent duplicates
+- Background jobs check if already processed
+- Retry uses same job ID
+
+### Job Monitoring
+
+**Tracking:**
+
+- Job name, start time, end time, status
+- Success/failure counts
+- Average execution time
+- Failed job details
+
+**Dashboard:**
+
+- Active jobs
+- Recent completions (last 24h)
+- Failed jobs
+- Job history (last 30 days)
+- Average job duration
+
 ---
 
 ## 59. Trust Architecture
@@ -1631,6 +2392,114 @@ JobPost
 ```
 
 for the same concept unless there is a clear architectural reason.
+
+### Required Fields
+
+**User:**
+
+- email (unique, not null)
+- passwordHash (not null)
+- createdAt (not null)
+
+**Organization:**
+
+- orgName (not null)
+- user_id (unique, not null)
+- createdAt (not null)
+
+**Opportunity:**
+
+- title (not null)
+- description (not null)
+- deadline (not null)
+- status (not null)
+- created_by (not null)
+- createdAt (not null)
+
+**Application:**
+
+- opportunity_id (not null)
+- applicant_id (not null)
+- status (not null)
+- appliedAt (not null)
+
+### Duplicate Prevention
+
+**Unique Constraints:**
+
+- User.email: unique
+- Organization.user_id: unique
+- Application.opportunity_id + applicant_id: unique (one application per opportunity)
+
+**Business Rules:**
+
+- No duplicate organization names per user
+- No duplicate opportunities (same title + same org + same deadline)
+- No duplicate applications
+
+### Invalid State Prevention
+
+**Database Level:**
+
+- Status enums validated at DB level
+- Foreign key constraints prevent orphaned records
+- Check constraints for valid ranges (e.g., score 0-100)
+
+**Application Level:**
+
+- Status transitions validated in service layer
+- Business rules enforced before state change
+- Invalid transitions throw exceptions
+
+### Stale/Invalid Data Handling
+
+**Detection:**
+
+- Opportunities with past deadlines but not EXPIRED
+- Applications in PREPARING status for 30+ days
+- Verification requests pending for 14+ days
+- Organizations with expired verification
+
+**Actions:**
+
+- Stale opportunities: auto-expire
+- Old applications: prompt user to withdraw or update
+- Old verifications: notify admin
+- Log all auto-corrections
+
+### Safe Migrations
+
+**Rules:**
+
+- Migrations must be backward compatible
+- Data migrations separate from schema migrations
+- Migrations tested on copy of production data
+- Rollback plan for every migration
+- Migrations reviewed before deployment
+
+**Process:**
+
+1. Write migration
+2. Test on staging
+3. Get approval
+4. Deploy to production
+5. Verify migration success
+6. Monitor for issues
+
+### Integrity Validation
+
+**Scheduled Validation:**
+
+- Daily: check for orphaned records
+- Weekly: check for invalid status transitions
+- Monthly: full data integrity audit
+
+**Validation Report:**
+
+- Records checked
+- Issues found
+- Auto-corrections applied
+- Manual review required
 
 ---
 
@@ -1732,6 +2601,198 @@ Use caching selectively.
 - Database monitoring.
 - Background job monitoring.
 - Backup monitoring.
+
+### Application/API Error Handling
+
+**Error Response Format:**
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid request parameters",
+    "details": [{"field": "email", "message": "Email is required"}],
+    "timestamp": "2025-01-15T10:30:00Z",
+    "requestId": "req-123"
+  }
+}
+```
+
+**Error Categories:**
+
+- 400: Bad Request (validation errors)
+- 401: Unauthorized (authentication required)
+- 403: Forbidden (insufficient permissions)
+- 404: Not Found (resource doesn't exist)
+- 409: Conflict (duplicate, state conflict)
+- 429: Rate Limited (too many requests)
+- 500: Internal Server Error (system error)
+
+**Error Logging:**
+
+- All 4xx errors logged (level: WARN)
+- All 5xx errors logged (level: ERROR)
+- Sensitive data excluded from logs
+- Request ID for correlation
+
+### Structured Logging
+
+**Log Format:**
+
+```json
+{
+  "timestamp": "2025-01-15T10:30:00Z",
+  "level": "INFO",
+  "service": "opportunity-service",
+  "message": "Opportunity published",
+  "requestId": "req-123",
+  "userId": "456",
+  "opportunityId": "789",
+  "duration": 45
+}
+```
+
+**Required Fields:**
+
+- timestamp (UTC, ISO 8601)
+- level (INFO, WARN, ERROR, FATAL)
+- service name
+- message
+- request ID (for correlation)
+
+**Sensitive Data Rules:**
+
+- Never log: passwords, tokens, API keys, credit cards
+- Never log: full document contents
+- Never log: personal contact details (in plain text)
+- Mask: email (j***@***.com), phone (***-***-1234)
+
+### Database Health Monitoring
+
+**Checks:**
+
+- Connection pool status
+- Active connections
+- Query performance (slow queries > 1s)
+- Replication lag (if applicable)
+- Disk usage
+- Index usage
+
+**Alerts:**
+
+- Connection pool > 80% utilized
+- Slow queries > 10 per minute
+- Replication lag > 5 seconds
+- Disk usage > 80%
+
+### Background Job Monitoring
+
+**Tracking:**
+
+- Job name
+- Start time
+- End time
+- Duration
+- Status (SUCCESS, FAILED, RUNNING)
+- Retry count
+- Error message (if failed)
+
+**Dashboard:**
+
+- Active jobs
+- Recent completions (last 24h)
+- Failed jobs
+- Job history (last 30 days)
+- Average job duration
+
+**Alerts:**
+
+- Job failure rate > 5%
+- Job duration > 2x average
+- Job stuck (running > expected time)
+- Dead letter queue not empty
+
+### Performance Monitoring
+
+**API Performance:**
+
+- Response time (p50, p95, p99)
+- Requests per second
+- Error rate
+- Slow endpoints (> 500ms)
+
+**Database Performance:**
+
+- Query time (p50, p95, p99)
+- Slow query count
+- Index hit rate
+- Connection wait time
+
+**Frontend Performance:**
+
+- Page load time
+- Time to interactive
+- First contentful paint
+- Largest contentful paint
+
+### Health Checks
+
+**Endpoints:**
+
+- `GET /health` — Basic health check
+- `GET /health/detailed` — Detailed health (requires auth)
+- `GET /health/ready` — Readiness check (for load balancer)
+- `GET /health/live` — Liveness check (for orchestrator)
+
+**Health Check Response:**
+
+```json
+{
+  "status": "UP",
+  "components": {
+    "database": {"status": "UP", "latency": 5},
+    "cache": {"status": "UP", "latency": 2},
+    "backgroundJobs": {"status": "UP", "active": 3}
+  }
+}
+```
+
+### Operational Alerts
+
+**Alert Channels:**
+
+- Email: critical alerts
+- Slack/Teams: operational alerts
+- PagerDuty: P0 incidents (if configured)
+
+**Alert Rules:**
+
+- API error rate > 5%: WARNING
+- API error rate > 10%: CRITICAL
+- Database connection failure: CRITICAL
+- Background job failure > 10%: WARNING
+- Disk usage > 90%: CRITICAL
+- Memory usage > 85%: WARNING
+
+### Incident Investigation
+
+**Required Information:**
+
+- Timestamp of incident
+- Affected service(s)
+- Error logs
+- Request IDs
+- User impact
+- Root cause (if known)
+- Resolution steps
+- Prevention measures
+
+**Post-Incident:**
+
+- Incident report within 24 hours
+- Root cause analysis
+- Action items to prevent recurrence
+- Update monitoring/alerts if needed
 
 ---
 
@@ -2029,6 +3090,111 @@ Users should eventually manage:
 - Communication preferences.
 - Data access.
 - Account deletion/request.
+
+### Profile Visibility
+
+**User Profile Visibility Options:**
+
+- PUBLIC: Visible to all (name, basic info)
+- ORGANIZATIONS_ONLY: Visible to verified organizations only
+- PRIVATE: Visible only to self
+
+**Field-Level Visibility:**
+
+| Field | Public | Org Only | Private |
+|---|---|---|---|
+| Name | Yes | Yes | Self |
+| Email | No | On application | Self |
+| Phone | No | On application | Self |
+| Education | Yes | Yes | Self |
+| Skills | Yes | Yes | Self |
+| Experience | Yes | Yes | Self |
+| Documents | No | On application | Self |
+
+### Sensitive/Private Data Access
+
+**Sensitive Data:**
+
+- Phone number
+- Email address
+- Date of birth
+- National ID
+- Financial information
+
+**Access Rules:**
+
+- Sensitive data visible only to:
+  - User themselves
+  - Organization (after application submitted)
+  - Admin (for platform support only)
+- Sensitive data never in public API responses
+- Sensitive data never in logs
+- Sensitive data never in analytics
+
+### CV/Document Access
+
+**Access Rules:**
+
+- Documents visible only to:
+  - User themselves
+  - Organization (for opportunities they applied to)
+  - Admin (for platform support)
+- Documents never publicly accessible
+- Document access logged for audit
+- Signed URLs for temporary access (expire in 1 hour)
+
+### Data Export
+
+**User Data Export:**
+
+- Users can request full data export
+- Export includes: profile, applications, saved opportunities, notifications
+- Export format: JSON or CSV
+- Export delivered via secure download link
+- Link expires after 7 days
+- Export request logged in audit
+
+**Organization Data Export:**
+
+- Organization admins can export org data
+- Export includes: opportunities, applications, team members
+- Same delivery mechanism as user export
+
+### Account Deletion/Deactivation
+
+**Deactivation:**
+
+- User can deactivate account
+- Deactivated account: hidden from search, login blocked
+- Data preserved for 30 days (recovery period)
+- After 30 days: soft delete
+
+**Deletion:**
+
+- User can request permanent deletion
+- Deletion requires confirmation (email + password)
+- Applications preserved (anonymized) for analytics
+- Documents permanently deleted
+- Audit trail preserved (anonymized)
+
+**Organization Deletion:**
+
+- Only ORG_ADMIN can request
+- All opportunities archived (not deleted)
+- All applications preserved (anonymized)
+- Team members notified
+
+### Data Retention
+
+| Data Type | Retention | Action |
+|---|---|---|
+| User accounts | Until deletion request | Soft delete after 30 days |
+| Applications | 5 years | Anonymize |
+| Opportunities | 5 years | Archive |
+| Documents | Until deletion request | Permanent delete |
+| Audit logs | 7 years | Archive |
+| Notifications | 90 days | Delete |
+| Analytics | Indefinite | Anonymize |
 
 ---
 
