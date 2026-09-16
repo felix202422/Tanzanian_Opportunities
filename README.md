@@ -45,7 +45,7 @@ cp .env.example .env   # set DB_PASSWORD
 mvn spring-boot:run
 ```
 
-Serves on `http://localhost:8081` (API base `/api/v1`).
+Serves on `http://localhost:8080` (API base `/api/v1`).
 
 ### 3. Frontend
 
@@ -60,13 +60,33 @@ Serves on `http://localhost:3000`, proxying `/api` to the backend.
 
 ## Seeded Demo Accounts
 
-Flyway seeds sample users in `V2__seed_data.sql`. Passwords are BCrypt-hashed:
+Flyway seeds 11 sample users in `V2__seed_data.sql`:
 
-| Role | Email | Password |
+### Admins
+
+| Email | Password |
+|---|---|
+| `admin@tdop.go.tz` | `admin123` |
+| `superadmin@tdop.go.tz` | `superadmin` |
+| `admin2024@tdop.go.tz` | `admin2024` |
+
+### Seekers (all `seeker123`)
+
+| Email | Name |
+|---|---|
+| `john.mwangi@email.com` | John Mwangi |
+| `amina.hassan@email.com` | Amina Hassan |
+| `peter.okech@email.com` | Peter Okech |
+| `fatima.bakari@email.com` | Fatima Bakari |
+| `david.mwinyi@email.com` | David Mwinyi |
+
+### Organizations (all `org123`)
+
+| Email | Name | Verified |
 |---|---|---|
-| Seeker | `john.mwangi@email.com` | `seeker123` |
-| Organization | `info@tanzgold.com` | `org123` |
-| Admin | `admin@tdop.go.tz` | `admin123` |
+| `info@tanzgold.com` | Tanzania Gold Mining Ltd | Yes |
+| `contact@safaricomTZ.com` | Safaricom Tanzania PLC | No |
+| `hr@crdbbank.com` | CRDB Bank PLC | No |
 
 ## Docker Deployment
 
@@ -78,7 +98,7 @@ docker compose up -d --build
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
-Services: `tdop-postgres` (PostgreSQL 16), `tdop-backend`, `tdop-adminer` (DB browser, port 8081).
+Services: `tdop-postgres` (PostgreSQL 16), `tdop-backend` (port 8080), `tdop-adminer` (DB browser, port 8082).
 
 ## Environment Variables
 
