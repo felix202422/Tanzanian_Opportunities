@@ -1,47 +1,74 @@
 # TDOP — Tanzania Digital Opportunity Platform
 
-A digital jobs and opportunities platform connecting **job seekers**, **organizations**, and **administrators** in Tanzania.
+A digital opportunity discovery and progress platform connecting **seekers**, **organizations**, and **platform operators** in Tanzania.
 
-This is a **single repository** containing the backend API, the web frontend, and Docker infrastructure.
+**Single repository** — backend API, web frontend, and Docker infrastructure.
 
 ## Repository Layout
 
-| Folder | Description | Stack |
-|---|---|---|
-| [`TDOP-backend/`](TDOP-backend/README.md) | REST API | Java 21, Spring Boot 3.3, Spring Security + JWT, PostgreSQL, Flyway |
-| [`TDOP-frontend/`](TDOP-frontend/README.md) | Web application | React 18, TypeScript, Vite, Tailwind CSS, React Router, i18next |
-| [`TDOP-infra/`](TDOP-infra/) | Deployment | Docker Compose, Nginx |
+| Folder | Stack |
+|---|---|
+| `TDOP-backend/` | Java 21, Spring Boot 3.3, Spring Security + JWT, PostgreSQL, Flyway |
+| `TDOP-frontend/` | React 18, TypeScript, Vite, Tailwind CSS, React Router |
+| `TDOP-infra/` | Docker Compose, Nginx |
+| `Docs/` | Master specification and roadmap |
 
-## Features
+## Current Implementation Status
 
-- JWT-based authentication with three roles: **Seeker**, **Organization**, **Admin**
-- Opportunity listings, search, and filtering
-- Applications and application status tracking (pending, reviewed, interview, offer, rejected)
-- Saved opportunities and side-by-side opportunity comparison
-- Organization verification workflow (admin approval)
-- Reporting with an admin review queue
-- Admin analytics dashboard and user management (suspend / change role)
-- Notifications (in-app + email)
-- English / Swahili localization
+### Implemented
 
-## Quick Start (local development)
+- JWT authentication (login, register, refresh, logout, forgot/reset password)
+- 9 platform roles: `SEEKER`, `ORGANIZATION`, `ORGANIZATION_ADMIN`, `ORGANIZATION_MEMBER`, `VERIFICATION_OFFICER`, `MODERATOR`, `ADMIN`, `SUPER_ADMIN`
+- User profiles (education, skills, experience, interests, career goals)
+- Organization profiles with verification workflow
+- Opportunity listings with full lifecycle (DRAFT → SUBMITTED → VERIFIED → APPROVED → PUBLISHED → CLOSING_SOON → EXPIRED)
+- Applications with status tracking and history
+- Saved opportunities and side-by-side comparison
+- Moderation workflow (approve/reject/suspend/archive/request-information)
+- Report investigation (create → assign → investigate → resolve/dismiss)
+- Escalation and appeal systems
+- Anti-fraud risk signal detection
+- Deadline engine (hourly: expire, closing_soon, reminders)
+- In-app notifications and email notifications (SMTP)
+- File upload (local filesystem)
+- Platform configuration (key-value store in DB)
+- RBAC infrastructure (roles, permissions, role-permission assignments)
+- Admin dashboard, user management, analytics, audit log
+- Trust workspace (verification, moderation, reports, escalations, appeals)
+- Super Admin workspace (18 pages: governance, security, intelligence, taxonomy, features, sessions, notifications, integrations, background jobs)
+- English/Swahili partial localization
+
+### Planned / Not Yet Implemented
+
+- Full-text search (currently SQL LIKE only)
+- Redis caching and token revocation
+- Rate limiting
+- Push notifications (web/mobile)
+- WhatsApp / SMS integration
+- Payment / subscription engine
+- Machine learning matching
+- Elasticsearch
+- E2E testing, load testing
+- Full accessibility (WCAG 2.2 AA)
+
+## Quick Start (Local Development)
 
 ### Prerequisites
 
-- Java 21 (JDK 21+)
+- Java 21+
 - Maven 3.8+
 - Node.js 18+
-- PostgreSQL running locally (port 5432)
+- PostgreSQL (port 5432)
 
 ### 1. Database
 
-Create a PostgreSQL database (default names: `tdop`, or `tdop_dev` for the `dev` profile). Flyway creates and seeds the schema on backend startup — see `TDOP-backend/src/main/resources/db/migration/`.
+Create a PostgreSQL database named `tdop`. Flyway creates and seeds the schema on backend startup.
 
 ### 2. Backend
 
 ```bash
 cd TDOP-backend
-cp .env.example .env   # set DB_PASSWORD
+cp .env.example .env   # set DB_PASSWORD, JWT_SECRET
 mvn spring-boot:run
 ```
 
@@ -60,33 +87,20 @@ Serves on `http://localhost:3000`, proxying `/api` to the backend.
 
 ## Seeded Demo Accounts
 
-Flyway seeds 11 sample users in `V2__seed_data.sql`:
+Flyway seeds 13 users in `V2__seed_data.sql` and `V8__sample_organizations.sql`:
 
-### Admins
-
-| Email | Password |
-|---|---|
-| `admin@tdop.go.tz` | `admin123` |
-| `superadmin@tdop.go.tz` | `superadmin` |
-| `admin2024@tdop.go.tz` | `admin2024` |
-
-### Seekers (all `seeker123`)
-
-| Email | Name |
-|---|---|
-| `john.mwangi@email.com` | John Mwangi |
-| `amina.hassan@email.com` | Amina Hassan |
-| `peter.okech@email.com` | Peter Okech |
-| `fatima.bakari@email.com` | Fatima Bakari |
-| `david.mwinyi@email.com` | David Mwinyi |
-
-### Organizations (all `org123`)
-
-| Email | Name | Verified |
+| Email | Role | Password |
 |---|---|---|
-| `info@tanzgold.com` | Tanzania Gold Mining Ltd | Yes |
-| `contact@safaricomTZ.com` | Safaricom Tanzania PLC | No |
-| `hr@crdbbank.com` | CRDB Bank PLC | No |
+| `admin@tdop.go.tz` | ADMIN | `admin123` |
+| `superadmin@tdop.go.tz` | ADMIN | `superadmin` |
+| `admin2024@tdop.go.tz` | ADMIN | `admin2024` |
+| `john.mwangi@email.com` | SEEKER | `seeker123` |
+| `amina.hassan@email.com` | SEEKER | `seeker123` |
+| `info@tanzgold.com` | ORGANIZATION (verified) | `org123` |
+| `contact@safaricomTZ.com` | ORGANIZATION | `org123` |
+| `hr@crdbbank.com` | ORGANIZATION | `org123` |
+| `careers@vodacom.co.tz` | ORGANIZATION (verified) | `org123` |
+| `hr@nmbbank.com` | ORGANIZATION | `org123` |
 
 ## Docker Deployment
 
@@ -94,19 +108,25 @@ Flyway seeds 11 sample users in `V2__seed_data.sql`:
 cd TDOP-infra
 cp .env.example .env   # REQUIRED: set POSTGRES_PASSWORD
 docker compose up -d --build
-# development overlay:
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
-Services: `tdop-postgres` (PostgreSQL 16), `tdop-backend` (port 8080), `tdop-adminer` (DB browser, port 8082).
+Services: `tdop-postgres` (PostgreSQL 16), `tdop-backend` (port 8080), `tdop-adminer` (port 8082).
 
 ## Environment Variables
 
-Secrets are never committed to this repository. Every credential is supplied at runtime via environment variables:
+| File | Variables |
+|---|---|
+| `TDOP-backend/.env.example` | `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `MAIL_*` |
+| `TDOP-frontend/.env.example` | `VITE_API_URL` |
+| `TDOP-infra/.env.example` | `POSTGRES_USER`, `POSTGRES_PASSWORD` |
 
-- [`TDOP-backend/.env.example`](TDOP-backend/.env.example) — `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `MAIL_*`
-- [`TDOP-frontend/.env.example`](TDOP-frontend/.env.example) — `VITE_API_URL`
-- [`TDOP-infra/.env.example`](TDOP-infra/.env.example) — `POSTGRES_USER`, `POSTGRES_PASSWORD`
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| `README.md` | This file — repository overview |
+| `README_PRD.md` | Product requirements document |
+| `Docs/TDOP_MASTER_SPEC.md` | Architecture and implementation specification |
 
 ## License
 
