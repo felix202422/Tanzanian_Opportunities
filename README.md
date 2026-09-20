@@ -28,21 +28,34 @@ A digital opportunity discovery and progress platform connecting **seekers**, **
 - Report investigation (create → assign → investigate → resolve/dismiss)
 - Escalation and appeal systems
 - Anti-fraud risk signal detection
-- Deadline engine (hourly: expire, closing_soon, reminders)
+- Deadline engine (hourly: expire, closing_soon, reminders with email delivery)
 - In-app notifications and email notifications (SMTP)
-- File upload (local filesystem)
+- File upload (local filesystem with path traversal protection)
 - Platform configuration (key-value store in DB)
 - RBAC infrastructure (roles, permissions, role-permission assignments)
 - Admin dashboard, user management, analytics, audit log
 - Trust workspace (verification, moderation, reports, escalations, appeals)
 - Super Admin workspace (18 pages: governance, security, intelligence, taxonomy, features, sessions, notifications, integrations, background jobs)
 - English/Swahili partial localization
+- Multi-field search (title, description, category, tags) with filtered search endpoint
+- Opportunity recommendations (skill/interest/location matching)
+- Similar opportunities engine
+- Social sharing (WhatsApp, Twitter, LinkedIn, Facebook)
+- Weekly digest email service (Monday 8AM cron)
+- Security headers (X-Frame-Options, HSTS, Referrer-Policy, XSS-Protection)
+- Account lockout (5 failed attempts → 15min lockout)
+- Login rate limiting (20 requests/min/IP)
+- Password reset token expiry (30min)
+- Email verification tokens with expiry (60min)
+- Opportunity ownership checks (org members can only manage their own)
+- Lifecycle state machine validation (Opportunity, Application, Report)
+- Production-ready Dockerfile (non-root user, multi-stage build)
+- Frontend Dockerfile with nginx (SPA fallback, security headers, gzip)
+- Production logging (logback: console + rolling file)
 
 ### Planned / Not Yet Implemented
 
-- Full-text search (currently SQL LIKE only)
 - Redis caching and token revocation
-- Rate limiting
 - Push notifications (web/mobile)
 - WhatsApp / SMS integration
 - Payment / subscription engine
@@ -106,11 +119,11 @@ Flyway seeds 13 users in `V2__seed_data.sql` and `V8__sample_organizations.sql`:
 
 ```bash
 cd TDOP-infra
-cp .env.example .env   # REQUIRED: set POSTGRES_PASSWORD
+cp .env.example .env   # REQUIRED: set POSTGRES_PASSWORD and JWT_SECRET
 docker compose up -d --build
 ```
 
-Services: `tdop-postgres` (PostgreSQL 16), `tdop-backend` (port 8080), `tdop-adminer` (port 8082).
+Services: `tdop-postgres` (PostgreSQL 16), `tdop-backend` (port 8080), `tdop-frontend` (port 3000), `tdop-adminer` (port 8082).
 
 ## Environment Variables
 
@@ -118,7 +131,7 @@ Services: `tdop-postgres` (PostgreSQL 16), `tdop-backend` (port 8080), `tdop-adm
 |---|---|
 | `TDOP-backend/.env.example` | `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `MAIL_*` |
 | `TDOP-frontend/.env.example` | `VITE_API_URL` |
-| `TDOP-infra/.env.example` | `POSTGRES_USER`, `POSTGRES_PASSWORD` |
+| `TDOP-infra/.env.example` | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `JWT_SECRET` |
 
 ## Documentation
 
