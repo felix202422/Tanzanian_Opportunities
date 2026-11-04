@@ -1,0 +1,49 @@
+# Java / Maven
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+
+# Node.js / frontend build output
+**/node_modules/
+**/dist/
+**/.vite/
+**/coverage/
+**/playwright-report/
+**/test-results/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+**/*.pem
+**/*.key
+**/secrets/
+
+# IDEs
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.bak
+
+# Operating systems
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local test databases and uploaded files
+*.db
+*.sqlite
+local-data/
+uploads/
