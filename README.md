@@ -4,7 +4,7 @@ TDOP is a planned bilingual platform for discovering, evaluating, publishing and
 
 ## Project status
 
-**Phase 0 — Project foundation and planning.** The local workspace and public GitHub repository were empty at inspection. The Phase 0 planning baseline, including `VERSIONS.md`, is published on `main` and `develop`. There is no runnable backend, frontend, database schema or deployment configuration yet. The requested live Kanban board is approved but not provisioned because this session is not authenticated to GitHub; see the [roadmap](docs/ROADMAP.md). Phase 1 will begin only after separate owner approval.
+**Phase 1 — Repository foundation in progress.** Phase 0 is marked complete by the project owner. The Phase 0 planning baseline, including `VERSIONS.md`, is published on `main` and `develop`. The live Kanban board is separately approved but not provisioned because this session is not authenticated to GitHub; see the [roadmap](docs/ROADMAP.md). No opportunity, authentication or other product features are implemented yet.
 
 ## Objectives
 
@@ -35,7 +35,7 @@ These are plans, not implemented features. See the [roadmap](docs/ROADMAP.md) fo
 
 ## Technology direction
 
-The proposed stack is Java 25 LTS with Spring Boot 4.1.2, PostgreSQL 18.6 with Flyway, and a React 19/TypeScript frontend built with Vite and Tailwind CSS 4. Versions were checked on 2026-11-04; see the [version baseline](VERSIONS.md) and [architecture decisions](docs/DECISIONS.md). Re-check and lock versions during Phase 1 before project initialization.
+The Phase 1 foundation uses Java 25 LTS, Spring Boot 4.1.2, Maven Wrapper 3.10.0, PostgreSQL 18.6, React 19.3.1, TypeScript 7.0.2, Vite 8.3.5 and Tailwind CSS 4.3.4. Compatibility rationale and exact tool versions are in [VERSIONS.md](VERSIONS.md) and [architecture decisions](docs/DECISIONS.md).
 
 ## Architecture overview
 
@@ -45,30 +45,31 @@ The planned system is a modular Spring Boot monolith exposing REST APIs under `/
 
 ```text
 TDOP/
-├── backend/                 # Spring Boot application (Phase 1+)
-├── frontend/                # React + TypeScript application (Phase 1+)
-├── infrastructure/          # Nginx and deployment configuration (later phases)
-├── scripts/                 # Cross-platform development helpers
-├── docs/                    # Product, architecture and delivery documentation
-├── .github/                 # CI, issue and pull-request templates (Phase 1+)
-├── docker-compose.yml       # Local services (Phase 1+)
-├── .env.example             # Safe configuration template (Phase 1+)
+├── backend/                 # Spring Boot foundation, Maven Wrapper and tests
+├── frontend/                # React/TypeScript app, Vite config and npm lockfile
+├── infrastructure/          # Nginx and production deployment (later phases)
+├── scripts/                 # Windows development helper
+├── docs/                    # Product, architecture and development docs
+├── .github/                 # CI, issue forms and pull-request template
+├── docker-compose.yml       # Local PostgreSQL service
+├── .env.example             # Safe local configuration template
+├── Makefile                 # POSIX development commands
 └── README.md
 ```
 
-Only Phase 0 documentation and repository policy files are present locally at this stage. Application directories and runtime configuration have not been created.
+The Phase 1 skeleton is in place. Product features remain unimplemented until their approved phases.
 
 ## Prerequisites and local setup
 
-Candidate development prerequisites are JDK 25, Maven 3.10, Node.js 26 LTS, npm, Docker Compose and PostgreSQL 18 (normally supplied through Docker for development). Exact installation instructions and cross-platform commands will be verified and added in Phase 1. **There is no application to install or run yet.**
+Development uses JDK 25, the Maven Wrapper (Maven 3.10.0), Node.js 26 LTS and npm. Docker Compose is required for the local PostgreSQL service. Detailed setup and platform-specific commands are in [docs/DEVELOPMENT_GUIDE.md](docs/DEVELOPMENT_GUIDE.md).
 
 ## Environment and database
 
-No `.env` file or credentials are needed in Phase 0. A safe `.env.example`, local PostgreSQL service, Flyway migrations and development seed data are planned for their assigned phases. Never commit real secrets or production data.
+Copy `.env.example` to `.env` for local services. The real `.env` is ignored by Git; do not commit secrets or production data. PostgreSQL runs through Compose; migrations and seed data are scheduled for Phase 2.
 
 ## Running and testing
 
-Backend, frontend, Docker, database, build and automated-test commands are **not available until their implementation phases**. No runtime or application tests have been run for this planning-only phase. Phase 1 will add validated commands; later phase gates will report actual test results.
+Run `./scripts/dev.ps1 check` on Windows or `make check` where Make is available. The backend context test and frontend lint, type-check, format and production build are configured. Docker Compose startup still needs validation on a host with Docker installed. No product/API features or related tests are claimed.
 
 ## API documentation
 

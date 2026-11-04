@@ -1,6 +1,6 @@
 # Architecture and Planning Decisions
 
-Decisions below are planning baselines recorded on **2026-11-04**. They do not represent installed dependencies or implemented behavior. The standalone [version baseline](../VERSIONS.md) records candidate package versions and compatibility notes. Re-verify candidates before Phase 1 creates manifests and wrappers. Significant changes should be documented here with rationale and impact.
+Decisions below are planning baselines recorded on **2026-11-04**. The standalone [version baseline](../VERSIONS.md) records Phase 1 selections and compatibility rationale. Significant changes should be documented here with rationale and impact.
 
 ## D-001 — Start with a modular monolith
 
@@ -12,9 +12,10 @@ Decisions below are planning baselines recorded on **2026-11-04**. They do not r
 
 | Component | Candidate as checked | Compatibility / selection note |
 | --- | --- | --- |
-| Java | JDK 25 LTS | GA and LTS status from OpenJDK; select a maintained vendor distribution in Phase 1. |
+| Java | JDK 25 LTS | CI uses Temurin 25; local validation uses the available Oracle JDK 25.0.4.1. |
 | Spring Boot | 4.1.2 | Official system requirements: Java 17–27; Spring Framework 7.0.10+. Stable channel. |
-| Maven | 3.10.0 | Apache lists as current recommended release; Maven 4.0.0-rc-7 is a preview and not selected. Use Maven Wrapper in Phase 1. |
+| Maven | Wrapper 3.10.0; wrapper plugin 3.3.4 | Apache lists 3.10.0 as current recommended; Maven 4.0.0-rc-7 is a preview and not selected. |
+| Java formatting | Formatter Maven Plugin 2.29.0 | Eclipse JDT formatter configured for Java 25 compliance and LF line endings. |
 | Springdoc OpenAPI | 3.2.0 | Current docs state support for Spring Boot 4 and Java 17+. Verify the chosen Spring MVC starter during backend scaffold. |
 | Spring Security, Hibernate, JUnit, Testcontainers and Flyway | Spring Boot 4.1.2 dependency management where possible | Avoid independent overrides; verify required Flyway PostgreSQL module and Testcontainers integration while scaffolding. |
 
@@ -52,7 +53,7 @@ Source: [PostgreSQL versioning and support](https://www.postgresql.org/support/v
 
 ## D-010 — Use a compatible React/Vite/Tailwind baseline
 
-**Status:** Accepted as a Phase 1 candidate. npm `latest` metadata and official project pages were checked on 2026-11-04. Node.js 26.13.0 is listed as LTS. Vite 8.3.5 requires Node `^20.19.0 || >=22.12.0`; React Router 8.5.1 requires Node `>=22.22.0` and React `>=19.2.7`, so Node 26 and React 19.3 satisfy these constraints. The Vite React plugin peers with Vite 8; Tailwind’s Vite plugin accepts Vite 5–8.
+**Status:** Accepted and rechecked during Phase 1. Node.js 26.13.0 is the target LTS; local Node 24.13.1 also meets Vite 8.3.5 (`^20.19.0 || >=22.12.0`) and React Router 8.5.1 (`>=22.22.0`) engine floors. React Router requires React/DOM `>=19.2.7`, so React 19.3.1 satisfies it. The Vite React plugin peers with Vite 8; Tailwind’s Vite plugin accepts Vite 5–8. Oxlint 1.91.0 provides native JavaScript, TypeScript, React, React Hooks and accessibility rules, so the project can use TypeScript 7.0.2 without ESLint plugin peer incompatibilities.
 
 | Package | Candidate |
 | --- | --- |

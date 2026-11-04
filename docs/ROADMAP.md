@@ -1,6 +1,6 @@
 # TDOP Roadmap and Kanban
 
-**Last updated:** 2026-11-04. Phase 0 planning artifacts have been prepared and validated locally. The project owner must approve Phase 0 before Phase 1 starts.
+**Last updated:** 2026-11-04. Phase 0 is complete by owner direction. Phase 1 is now active; the live GitHub board remains a separate authentication-blocked task.
 
 ## Kanban workflow
 
@@ -21,8 +21,8 @@ An item must not skip required states or be marked Done because work was merely 
 
 | Phase | Status | Gate / outcome |
 | --- | --- | --- |
-| 0 — Foundation and planning | **Done and published; Phase 1 awaits approval** | Requirements, MVP, architecture, version candidates, policies, decisions and roadmap documented; no application code. Baseline is on `main` and `develop`. |
-| 1 — Repository and development environment | Backlog / approval-gated | Monorepo, wrappers, frontend/backend scaffolds, linting, environment templates and local services. |
+| 0 — Foundation and planning | **Done and owner-accepted** | Requirements, MVP, architecture, versions, policies and roadmap published to `main` and `develop`. The separately approved live board remains blocked on GitHub authentication. |
+| 1 — Repository and development environment | **In Progress** | Monorepo, wrappers, frontend/backend scaffolds, linting, environment templates and local services. |
 | 2 — Database architecture | Backlog | ER design, PostgreSQL connectivity, Flyway migrations, seed profile and integrity tests. |
 | 3 — Backend core architecture | Backlog | Layers, DTOs, validation, errors, logging, API versioning, OpenAPI and health endpoints. |
 | 4 — Authentication and authorization | Backlog | Registration, login, password hashing, tokens, revocation, roles and security tests. |
@@ -47,13 +47,13 @@ An item must not skip required states or be marked Done because work was merely 
 - Both `main` and `develop` were verified on the remote at the same initial Phase 0 commit. The local `main` branch tracks `origin/main`; `develop` tracks `origin/develop`.
 - The initial direct push to `main` was an explicit empty-repository bootstrap exception. Future work follows the pull-request workflow in [CONTRIBUTING.md](../CONTRIBUTING.md).
 - No live GitHub Projects board or issue cards have been created. The owner has now approved board setup, but `gh auth status` reports no authenticated GitHub account and the browser redirects to sign-in. Provisioning is blocked until an authenticated session is available.
-- Phase 1 remains blocked until separate owner approval.
+- Phase 1 was started with owner approval; later phases remain gated.
 
 ## Live Kanban board provisioning
 
 - **Requested project:** `TDOP — Development Roadmap`, linked to this repository.
 - **Required workflow statuses:** Backlog → To Do → In Progress → Code Review → Testing → Done.
-- **Planned initial cards:** one phase issue per roadmap phase, with scope, dependencies and verifiable acceptance criteria; Phase 0 Done, Phase 1 awaiting owner approval, later phases Backlog.
+- **Planned initial cards:** one phase issue per roadmap phase, with scope, dependencies and verifiable acceptance criteria; Phase 0 Done, Phase 1 In Progress, later phases Backlog.
 - **Current status:** owner-approved, not provisioned. GitHub Project creation and issue seeding require authentication unavailable in this session. Do not report the board as live until the remote Project and its fields/cards are verified.
 
 ## Phase 0 issue plan and acceptance
@@ -66,7 +66,7 @@ Phase 0 consisted of local planning work items:
 4. **Prepare project foundation documents** — add required Phase 0 files and this Kanban/roadmap definition.
 5. **Publish approved Phase 0 baseline** — owner-authorized initial Git bootstrap and publication to `main`/`develop`; do not create a live board or issues.
 
-Phase 0 acceptance requires these documents to agree, exact version claims to have sources/date, MVP boundaries to be explicit, and no claim of unimplemented functionality or fabricated test results. Publication is a separate owner-authorized task and its actual state is reported in the completion report. Phase 1 remains blocked until explicit owner approval.
+Phase 0 acceptance requires these documents to agree, exact version claims to have sources/date, MVP boundaries to be explicit, and no claim of unimplemented functionality or fabricated test results. The owner has accepted Phase 0 complete. Phase 1 is active; the board remains a separate blocked operation.
 
 ## Phase gate rules
 

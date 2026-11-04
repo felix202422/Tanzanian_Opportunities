@@ -11,6 +11,8 @@ hs_err_pid*
 **/dist/
 **/.vite/
 **/coverage/
+*.tsbuildinfo
+**/.eslintcache
 **/playwright-report/
 **/test-results/
 

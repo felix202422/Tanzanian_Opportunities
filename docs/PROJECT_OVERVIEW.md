@@ -67,4 +67,4 @@ Measure real service outcomes only after implementation and privacy review: vali
 
 ## Current delivery status
 
-The repository was empty at initial inspection. The Phase 0 planning baseline is now published to `main` and `develop`. Live Kanban board creation is owner-approved but pending GitHub authentication; no board or issue cards exist yet. Application code remains unimplemented.
+The repository was empty at initial inspection. The Phase 0 planning baseline is published to `main` and `develop`, and Phase 1 scaffolding is being developed on a feature branch. Live Kanban board creation is owner-approved but pending GitHub authentication. Product features remain unimplemented.
