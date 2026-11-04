@@ -1,6 +1,6 @@
 # Development Guide
 
-**Status:** Phase 1 foundation. The backend and frontend are scaffolded; opportunity, identity, database and application features are not yet implemented. Runtime checks are recorded in the Phase 1 completion report.
+**Status:** Phase 1 foundation, merged to `develop` after owner approval. The backend and frontend are scaffolded; opportunity, identity, database and application features are not yet implemented. Actual command results are in the [Phase 1 verification record](#phase-1-verification-record-2026-11-04) below.
 
 ## Prerequisites
 
@@ -117,6 +117,8 @@ Actual results from the Phase 1 implementation host (Windows 11, Oracle JDK 25.0
 | Frontend page check | `http://127.0.0.1:5176` renders the foundation page with English translations in a browser. |
 | Vite `/api` proxy | `GET http://127.0.0.1:5176/api/v1/nonexistent` returns the same Spring JSON 404 as a direct backend request, proving the proxy chain. |
 | `docker compose config` equivalent | `docker-compose.yml` parsed and read back correctly with a YAML parser. Docker is **not installed** on this host, so container startup, healthcheck and volume behaviour are **unverified** and recorded as an open blocker on the board. |
+| GitHub Actions CI (run `41815255222`, commit `5c2526c`) | `Backend verification` **success**, `Frontend quality checks` **success**. The first CI run failed with exit 126 because the Windows-generated `mvnw` lacked the executable bit; fixed by mode change `100644 → 100755`. |
+| PR #1 | Owner-approved and merged to `develop` as `50766b3` (merge commit). Board card moved Code Review → Testing. |
 
 Note on ports: this machine already uses ports 8080, 5173 and 5174 for unrelated applications, so `.env` was set locally (gitignored) to `SERVER_PORT=8081` and `VITE_DEV_PORT=5176` for the smoke runs. The committed defaults remain 8080/5173 with strict port binding so a clash fails loudly instead of attaching to another app.
 
