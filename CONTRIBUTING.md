@@ -19,7 +19,7 @@ The documented branch model is:
 - `fix/<short-name>`: bug fixes, branching from `develop` unless a release fix is explicitly approved.
 - `docs/<short-name>`: documentation work, branching from `develop`.
 
-Open a pull request into `develop`, describe the change and its acceptance criteria, link the issue, and include tests and documentation updates where relevant. Releases are reviewed and merged from `develop` to `main`. The owner explicitly approved the one-time initial Phase 0 bootstrap directly to `main`; this is not a pattern for subsequent work. Never push directly to `main` outside an explicitly approved empty-repository bootstrap.
+Open a pull request into `develop`, describe the change and its acceptance criteria, link the issue, and include tests and documentation updates where relevant. Releases are reviewed and merged from `develop` to `main`. While Phase 0 is still in repository bootstrap, the owner may authorize direct synchronization of corrections to the planning baseline across `main` and `develop`. After Phase 1 begins, substantive work must follow the pull-request workflow; never push feature work directly to `main`.
 
 The repository was empty at initial inspection. The Phase 0 baseline has been published to `main` and `develop`. The owner has approved creating a live GitHub Projects board, but setup is pending GitHub authentication; no board or issue cards exist yet. See [the roadmap](docs/ROADMAP.md) for status.
 
