@@ -4,7 +4,7 @@ TDOP is a planned bilingual platform for discovering, evaluating, publishing and
 
 ## Project status
 
-**Phase 1 — Repository foundation in progress.** Phase 0 is marked complete by the project owner. The Phase 0 planning baseline, including `VERSIONS.md`, is published on `main` and `develop`. The live Kanban board is separately approved but not provisioned because this session is not authenticated to GitHub; see the [roadmap](docs/ROADMAP.md). No opportunity, authentication or other product features are implemented yet.
+**Phase 1 — Repository foundation in code review.** Phase 0 is marked complete by the project owner. The Phase 0 planning baseline, including `VERSIONS.md`, is published on `main` and `develop`; the Phase 1 foundation is implemented on `feature/phase1-repository-foundation` and open as [PR #1](https://github.com/felix202422/Tanzanian_Opportunities/pull/1). The live Kanban board is provisioned at [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3) with one card per phase. Backend/frontend scaffolds and quality tooling work locally; the Docker PostgreSQL service has not been started because Docker is not installed on the implementation host. No opportunity, authentication or other product features are implemented yet.
 
 ## Objectives
 
@@ -81,7 +81,7 @@ None yet. Screenshots will be added after the public website and responsive inte
 
 ## Contributing
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). The documented workflow uses `main`, `develop`, feature branches and pull requests. The initial Phase 0 baseline is published to both branches. Live Kanban board creation is approved but awaits GitHub authentication; see [CONTRIBUTING.md](CONTRIBUTING.md) and [the roadmap](docs/ROADMAP.md).
+Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). The documented workflow uses `main`, `develop`, feature branches and pull requests; Phase 1 work is open as [PR #1](https://github.com/felix202422/Tanzanian_Opportunities/pull/1). Track phase state on the live board, [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3), using Backlog → To Do → In Progress → Code Review → Testing → Done.
 
 ## Security
 

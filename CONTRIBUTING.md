@@ -21,7 +21,7 @@ The documented branch model is:
 
 Open a pull request into `develop`, describe the change and its acceptance criteria, link the issue, and include tests and documentation updates where relevant. Releases are reviewed and merged from `develop` to `main`. While Phase 0 is still in repository bootstrap, the owner may authorize direct synchronization of corrections to the planning baseline across `main` and `develop`. After Phase 1 begins, substantive work must follow the pull-request workflow; never push feature work directly to `main`.
 
-The repository was empty at initial inspection. The Phase 0 baseline has been published to `main` and `develop`. The owner has approved creating a live GitHub Projects board, but setup is pending GitHub authentication; no board or issue cards exist yet. See [the roadmap](docs/ROADMAP.md) for status.
+The repository was empty at initial inspection. The Phase 0 baseline has been published to `main` and `develop`. The owner-approved live GitHub Projects board now exists as [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3), linked to this repository, with one card per roadmap phase (issues #2–#20). See [the roadmap](docs/ROADMAP.md) for the current phase state.
 
 ## Kanban workflow
 

@@ -100,6 +100,26 @@ On Windows, the corresponding commands are available through `scripts/dev.ps1`, 
 
 The frontend's Axios client uses `VITE_API_BASE_URL` or defaults to `/api/v1`. Vite proxies `/api` to `http://127.0.0.1:8080`. API endpoints, database credentials, security tokens and production configuration will be added only in their approved phases.
 
+## Phase 1 verification record (2026-11-04)
+
+Actual results from the Phase 1 implementation host (Windows 11, Oracle JDK 25.0.4.1, Node 24.13.1, npm 11.8.0):
+
+| Command | Result |
+| --- | --- |
+| `backend ./mvnw.cmd -B verify` | BUILD SUCCESS; 1 test run, 0 failures, 0 errors; formatter validation processed 2 files with 0 changes; boot jar produced. |
+| `frontend npm ci` | 92 packages installed from the lockfile; `npm audit` reports 0 vulnerabilities. |
+| `frontend npm run lint` | Passes (`oxlint --deny-warnings`). |
+| `frontend npm run typecheck` | Passes (TypeScript 7.0.2 project build). |
+| `frontend npm run format:check` | Passes (all matched files use Prettier code style). |
+| `frontend npm run build` | Passes (Vite production build, 165 modules). |
+| `./scripts/dev.ps1 check` | Passes end-to-end (runs the backend verify plus all frontend checks above). |
+| Backend smoke run | Spring Boot 4.1.2 started; `GET /api/v1/nonexistent` returns the Spring JSON 404 body, confirming no product endpoints exist yet. |
+| Frontend page check | `http://127.0.0.1:5176` renders the foundation page with English translations in a browser. |
+| Vite `/api` proxy | `GET http://127.0.0.1:5176/api/v1/nonexistent` returns the same Spring JSON 404 as a direct backend request, proving the proxy chain. |
+| `docker compose config` equivalent | `docker-compose.yml` parsed and read back correctly with a YAML parser. Docker is **not installed** on this host, so container startup, healthcheck and volume behaviour are **unverified** and recorded as an open blocker on the board. |
+
+Note on ports: this machine already uses ports 8080, 5173 and 5174 for unrelated applications, so `.env` was set locally (gitignored) to `SERVER_PORT=8081` and `VITE_DEV_PORT=5176` for the smoke runs. The committed defaults remain 8080/5173 with strict port binding so a clash fails loudly instead of attaching to another app.
+
 ## Current environment note
 
 The Phase 1 implementation host has JDK 25.0.4.1, Maven 3.9.16, Node 24.13.1 and npm 11.8.0. The project wrappers target Maven 3.10.0 and Node 26.13.0; the installed Node 24 release meets the declared engine range. The Docker CLI is not installed in the implementation environment, so Compose startup remains unverified until Docker Desktop is available.

@@ -74,9 +74,9 @@ Sources: [Node.js releases](https://nodejs.org/en/about/previous-releases), [Rea
 
 This is a candidate compatibility matrix, not a tested lockfile. Phase 1 must create reproducible lockfiles and verify install, build, lint and type-check on the target environment. Use TypeScript strict mode and do not introduce `any` without justification.
 
-## D-011 — Bootstrap the documented Git workflow; defer the live board
+## D-011 — Bootstrap the documented Git workflow and provision the live board
 
-**Status:** Branch workflow bootstrapped; live board pending authentication. Use `main`, `develop`, `feature/*`, `fix/*` and `docs/*` with pull requests and Conventional Commit messages. Track work through Backlog → To Do → In Progress → Code Review → Testing → Done. The owner authorized the initial commit and the Phase 0 baseline was pushed to both `main` and `develop`. The owner has since approved live board creation, but this session is not authenticated to GitHub; no project or issue cards have been created. See [Roadmap](ROADMAP.md).
+**Status:** Accepted and provisioned. Use `main`, `develop`, `feature/*`, `fix/*` and `docs/*` with pull requests and Conventional Commit messages. Track work through Backlog → To Do → In Progress → Code Review → Testing → Done. The owner authorized the initial commit and the Phase 0 baseline was pushed to both `main` and `develop` as a one-time bootstrap exception. The owner later approved live board creation, which was carried out on 2026-11-04 using the owner's stored Git credentials through the GitHub API: project [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3) linked to this repository, a six-option `Status` field, and one card per roadmap phase (issues #2–#20), verified by reading the project back from the API. Interactive `gh auth status` remains unauthenticated; only the stored Git credential was used. See [Roadmap](ROADMAP.md).
 
 ## D-012 — License the project under Apache-2.0
 

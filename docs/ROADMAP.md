@@ -1,6 +1,6 @@
 # TDOP Roadmap and Kanban
 
-**Last updated:** 2026-11-04. Phase 0 is complete by owner direction. Phase 1 is now active; the live GitHub board remains a separate authentication-blocked task.
+**Last updated:** 2026-11-04. Phase 0 is complete by owner direction. Phase 1 foundation is implemented, validated and open for review as PR #1; its board card is in Code Review. The live GitHub Kanban board has been provisioned and linked to this repository.
 
 ## Kanban workflow
 
@@ -15,14 +15,14 @@ The required workflow is **Backlog → To Do → In Progress → Code Review →
 | Testing | Review is approved; automated and required manual checks are being completed. |
 | Done | Acceptance criteria are verified, documentation is current, required checks pass, and changes are merged through the approved process. |
 
-An item must not skip required states or be marked Done because work was merely written. Record failed checks and blockers in the item. The owner has authorized a live GitHub Project, but it has not yet been created because this session is unauthenticated; the local workflow remains defined here until provisioning succeeds.
+An item must not skip required states or be marked Done because work was merely written. Record failed checks and blockers in the item. The owner-authorized live GitHub Project exists as [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3), is linked to this repository and uses the six statuses above; it is the authoritative view of phase state, and the table below mirrors it.
 
 ## Phase status
 
 | Phase | Status | Gate / outcome |
 | --- | --- | --- |
-| 0 — Foundation and planning | **Done and owner-accepted** | Requirements, MVP, architecture, versions, policies and roadmap published to `main` and `develop`. The separately approved live board remains blocked on GitHub authentication. |
-| 1 — Repository and development environment | **In Progress** | Monorepo, wrappers, frontend/backend scaffolds, linting, environment templates and local services. |
+| 0 — Foundation and planning | **Done and owner-accepted** | Requirements, MVP, architecture, versions, policies and roadmap published to `main` and `develop`; its board card is Done. |
+| 1 — Repository and development environment | **Code Review** | Monorepo, wrappers, frontend/backend scaffolds, linting, environment templates and local services implemented and validated locally; open as PR #1. Blocker recorded: Docker is not installed on the implementation host, so `docker compose up` startup is not yet verified. |
 | 2 — Database architecture | Backlog | ER design, PostgreSQL connectivity, Flyway migrations, seed profile and integrity tests. |
 | 3 — Backend core architecture | Backlog | Layers, DTOs, validation, errors, logging, API versioning, OpenAPI and health endpoints. |
 | 4 — Authentication and authorization | Backlog | Registration, login, password hashing, tokens, revocation, roles and security tests. |
@@ -46,15 +46,16 @@ An item must not skip required states or be marked Done because work was merely 
 - The local repository was initialized on `main`; the owner-approved Phase 0 baseline was committed and pushed to GitHub.
 - Both `main` and `develop` were verified on the remote at the same initial Phase 0 commit. The local `main` branch tracks `origin/main`; `develop` tracks `origin/develop`.
 - The initial direct push to `main` was an explicit empty-repository bootstrap exception. Future work follows the pull-request workflow in [CONTRIBUTING.md](../CONTRIBUTING.md).
-- No live GitHub Projects board or issue cards have been created. The owner has now approved board setup, but `gh auth status` reports no authenticated GitHub account and the browser redirects to sign-in. Provisioning is blocked until an authenticated session is available.
+- A live GitHub Projects board exists at [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3), linked to this repository, with one card per roadmap phase. `gh auth status` still reports no interactive login for this session; board provisioning was performed with the repository owner's stored Git credentials via the GitHub API, and the resulting project, Status field options and cards were verified by reading them back from the API.
 - Phase 1 was started with owner approval; later phases remain gated.
 
 ## Live Kanban board provisioning
 
-- **Requested project:** `TDOP — Development Roadmap`, linked to this repository.
-- **Required workflow statuses:** Backlog → To Do → In Progress → Code Review → Testing → Done.
-- **Planned initial cards:** one phase issue per roadmap phase, with scope, dependencies and verifiable acceptance criteria; Phase 0 Done, Phase 1 In Progress, later phases Backlog.
-- **Current status:** owner-approved, not provisioned. GitHub Project creation and issue seeding require authentication unavailable in this session. Do not report the board as live until the remote Project and its fields/cards are verified.
+- **Project:** [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3), created on 2026-11-04 with the repository owner's stored Git credentials through the GitHub GraphQL/REST API and linked to `felix202422/Tanzanian_Opportunities`.
+- **Workflow statuses:** Backlog → To Do → In Progress → Code Review → Testing → Done, configured as the single-select `Status` field's options in that order.
+- **Cards:** one issue per roadmap phase, issues #2–#20 (Phases 0–18), each carrying scope, acceptance criteria, the workflow rule and a pointer to this document.
+- **Verified state:** read back from the API on 2026-11-04 — 19 items, Phase 0 Done, Phase 1 Code Review, Phases 2–18 Backlog. A comment recording the Phase 1 Docker blocker is attached to [issue #3](https://github.com/felix202422/Tanzanian_Opportunities/issues/3).
+- **Reproducibility:** the provisioning used temporary scripts outside the repository; the board itself is the persistent artifact. Re-running provisioning would create duplicates, so treat the live project as the source of truth.
 
 ## Phase 0 issue plan and acceptance
 
@@ -66,7 +67,7 @@ Phase 0 consisted of local planning work items:
 4. **Prepare project foundation documents** — add required Phase 0 files and this Kanban/roadmap definition.
 5. **Publish approved Phase 0 baseline** — owner-authorized initial Git bootstrap and publication to `main`/`develop`; do not create a live board or issues.
 
-Phase 0 acceptance requires these documents to agree, exact version claims to have sources/date, MVP boundaries to be explicit, and no claim of unimplemented functionality or fabricated test results. The owner has accepted Phase 0 complete. Phase 1 is active; the board remains a separate blocked operation.
+Phase 0 acceptance requires these documents to agree, exact version claims to have sources/date, MVP boundaries to be explicit, and no claim of unimplemented functionality or fabricated test results. The owner has accepted Phase 0 complete, and the separately approved live board has since been provisioned and verified. Phase 1 is implemented and in Code Review; the Docker startup check is recorded as an open blocker.
 
 ## Phase gate rules
 
