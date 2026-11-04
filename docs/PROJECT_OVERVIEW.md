@@ -67,4 +67,4 @@ Measure real service outcomes only after implementation and privacy review: vali
 
 ## Current delivery status
 
-The repository was empty at initial inspection. The Phase 0 planning baseline is published to `main` and `develop`; the Phase 1 foundation is implemented on a feature branch and open as PR #1. The owner-approved live board exists at [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3) with a card per phase. Product features remain unimplemented.
+The repository was empty at initial inspection. The Phase 0 planning baseline is published to `main` and `develop`; the Phase 1 foundation is merged to `develop` through PR #1 with CI green. The owner-approved live board exists at [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3) with a card per phase. Product features remain unimplemented.

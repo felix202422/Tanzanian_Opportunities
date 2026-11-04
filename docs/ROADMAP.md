@@ -1,6 +1,6 @@
 # TDOP Roadmap and Kanban
 
-**Last updated:** 2026-11-04. Phase 0 is complete by owner direction. Phase 1 foundation is implemented, validated and open for review as PR #1; its board card is in Code Review. The live GitHub Kanban board has been provisioned and linked to this repository.
+**Last updated:** 2026-11-04. Phase 0 is complete by owner direction. Phase 1 was owner-approved and merged to `develop` as `50766b3` with both CI jobs green; its board card is in Testing pending the Docker manual check. The live GitHub Kanban board has been provisioned and linked to this repository.
 
 ## Kanban workflow
 
@@ -22,7 +22,7 @@ An item must not skip required states or be marked Done because work was merely 
 | Phase | Status | Gate / outcome |
 | --- | --- | --- |
 | 0 — Foundation and planning | **Done and owner-accepted** | Requirements, MVP, architecture, versions, policies and roadmap published to `main` and `develop`; its board card is Done. |
-| 1 — Repository and development environment | **Code Review** | Monorepo, wrappers, frontend/backend scaffolds, linting, environment templates and local services implemented and validated locally; open as PR #1. Blocker recorded: Docker is not installed on the implementation host, so `docker compose up` startup is not yet verified. |
+| 1 — Repository and development environment | **Testing** | Implemented in PR #1, owner-approved and merged to `develop` as `50766b3`; CI passed (backend verification + frontend quality checks). Outstanding required manual check: Docker is not installed on the implementation host, so `docker compose up` startup is not yet verified. Card stays in Testing until that runs or the owner changes the criterion. |
 | 2 — Database architecture | Backlog | ER design, PostgreSQL connectivity, Flyway migrations, seed profile and integrity tests. |
 | 3 — Backend core architecture | Backlog | Layers, DTOs, validation, errors, logging, API versioning, OpenAPI and health endpoints. |
 | 4 — Authentication and authorization | Backlog | Registration, login, password hashing, tokens, revocation, roles and security tests. |
@@ -54,7 +54,7 @@ An item must not skip required states or be marked Done because work was merely 
 - **Project:** [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3), created on 2026-11-04 with the repository owner's stored Git credentials through the GitHub GraphQL/REST API and linked to `felix202422/Tanzanian_Opportunities`.
 - **Workflow statuses:** Backlog → To Do → In Progress → Code Review → Testing → Done, configured as the single-select `Status` field's options in that order.
 - **Cards:** one issue per roadmap phase, issues #2–#20 (Phases 0–18), each carrying scope, acceptance criteria, the workflow rule and a pointer to this document.
-- **Verified state:** read back from the API on 2026-11-04 — 19 items, Phase 0 Done, Phase 1 Code Review, Phases 2–18 Backlog. A comment recording the Phase 1 Docker blocker is attached to [issue #3](https://github.com/felix202422/Tanzanian_Opportunities/issues/3).
+- **Verified state:** read back from the API on 2026-11-04 — 19 items, Phase 0 Done, Phase 1 Testing, Phases 2–18 Backlog. Comments recording the Phase 1 CI results, merge and the outstanding Docker blocker are attached to [issue #3](https://github.com/felix202422/Tanzanian_Opportunities/issues/3).
 - **Reproducibility:** the provisioning used temporary scripts outside the repository; the board itself is the persistent artifact. Re-running provisioning would create duplicates, so treat the live project as the source of truth.
 
 ## Phase 0 issue plan and acceptance
@@ -67,7 +67,7 @@ Phase 0 consisted of local planning work items:
 4. **Prepare project foundation documents** — add required Phase 0 files and this Kanban/roadmap definition.
 5. **Publish approved Phase 0 baseline** — owner-authorized initial Git bootstrap and publication to `main`/`develop`; do not create a live board or issues.
 
-Phase 0 acceptance requires these documents to agree, exact version claims to have sources/date, MVP boundaries to be explicit, and no claim of unimplemented functionality or fabricated test results. The owner has accepted Phase 0 complete, and the separately approved live board has since been provisioned and verified. Phase 1 is implemented and in Code Review; the Docker startup check is recorded as an open blocker.
+Phase 0 acceptance requires these documents to agree, exact version claims to have sources/date, MVP boundaries to be explicit, and no claim of unimplemented functionality or fabricated test results. The owner has accepted Phase 0 complete, and the separately approved live board has since been provisioned and verified. Phase 1 is owner-approved and merged with CI green; it remains in Testing until the Docker manual check is performed.
 
 ## Phase gate rules
 
