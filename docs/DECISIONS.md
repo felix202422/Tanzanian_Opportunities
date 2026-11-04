@@ -1,6 +1,6 @@
 # Architecture and Planning Decisions
 
-Decisions below are planning baselines recorded on **2026-11-04**. They do not represent installed dependencies or implemented behavior. The standalone [version baseline](../versions.md) records candidate package versions and compatibility notes. Re-verify candidates before Phase 1 creates manifests and wrappers. Significant changes should be documented here with rationale and impact.
+Decisions below are planning baselines recorded on **2026-11-04**. They do not represent installed dependencies or implemented behavior. The standalone [version baseline](../VERSIONS.md) records candidate package versions and compatibility notes. Re-verify candidates before Phase 1 creates manifests and wrappers. Significant changes should be documented here with rationale and impact.
 
 ## D-001 — Start with a modular monolith
 
@@ -75,7 +75,7 @@ This is a candidate compatibility matrix, not a tested lockfile. Phase 1 must cr
 
 ## D-011 — Bootstrap the documented Git workflow; defer the live board
 
-**Status:** Accepted and bootstrapped. Use `main`, `develop`, `feature/*`, `fix/*` and `docs/*` with pull requests and Conventional Commit messages. Track work through Backlog → To Do → In Progress → Code Review → Testing → Done. The owner authorized the initial commit and the Phase 0 baseline was pushed to both `main` and `develop`. The live GitHub Project board and issue cards remain uncreated; see [Roadmap](ROADMAP.md).
+**Status:** Branch workflow bootstrapped; live board pending authentication. Use `main`, `develop`, `feature/*`, `fix/*` and `docs/*` with pull requests and Conventional Commit messages. Track work through Backlog → To Do → In Progress → Code Review → Testing → Done. The owner authorized the initial commit and the Phase 0 baseline was pushed to both `main` and `develop`. The owner has since approved live board creation, but this session is not authenticated to GitHub; no project or issue cards have been created. See [Roadmap](ROADMAP.md).
 
 ## D-012 — License the project under Apache-2.0
 

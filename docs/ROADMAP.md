@@ -15,7 +15,7 @@ The required workflow is **Backlog → To Do → In Progress → Code Review →
 | Testing | Review is approved; automated and required manual checks are being completed. |
 | Done | Acceptance criteria are verified, documentation is current, required checks pass, and changes are merged through the approved process. |
 
-An item must not skip required states or be marked Done because work was merely written. Record failed checks and blockers in the item. A live GitHub Project and issue cards have **not** been created; this file is the local planning record until separately authorized.
+An item must not skip required states or be marked Done because work was merely written. Record failed checks and blockers in the item. The owner has authorized a live GitHub Project, but it has not yet been created because this session is unauthenticated; the local workflow remains defined here until provisioning succeeds.
 
 ## Phase status
 
@@ -46,8 +46,15 @@ An item must not skip required states or be marked Done because work was merely 
 - The local repository was initialized on `main`; the owner-approved Phase 0 baseline was committed and pushed to GitHub.
 - Both `main` and `develop` were verified on the remote at the same initial Phase 0 commit. The local `main` branch tracks `origin/main`; `develop` tracks `origin/develop`.
 - The initial direct push to `main` was an explicit empty-repository bootstrap exception. Future work follows the pull-request workflow in [CONTRIBUTING.md](../CONTRIBUTING.md).
-- No live GitHub Projects board or issue cards were created. The Kanban workflow is documented locally and in this repository.
+- No live GitHub Projects board or issue cards have been created. The owner has now approved board setup, but `gh auth status` reports no authenticated GitHub account and the browser redirects to sign-in. Provisioning is blocked until an authenticated session is available.
 - Phase 1 remains blocked until separate owner approval.
+
+## Live Kanban board provisioning
+
+- **Requested project:** `TDOP — Development Roadmap`, linked to this repository.
+- **Required workflow statuses:** Backlog → To Do → In Progress → Code Review → Testing → Done.
+- **Planned initial cards:** one phase issue per roadmap phase, with scope, dependencies and verifiable acceptance criteria; Phase 0 Done, Phase 1 awaiting owner approval, later phases Backlog.
+- **Current status:** owner-approved, not provisioned. GitHub Project creation and issue seeding require authentication unavailable in this session. Do not report the board as live until the remote Project and its fields/cards are verified.
 
 ## Phase 0 issue plan and acceptance
 
@@ -55,7 +62,7 @@ Phase 0 consisted of local planning work items:
 
 1. **Inspect repository and access** — record local workspace state and verify remote access read-only.
 2. **Establish product boundary** — define audiences, 12 categories, MVP and deferred capabilities.
-3. **Record architecture and technology choices** — document modular architecture, data/security strategy and source-verified candidates in `versions.md` and `docs/DECISIONS.md`.
+3. **Record architecture and technology choices** — document modular architecture, data/security strategy and source-verified candidates in `VERSIONS.md` and `docs/DECISIONS.md`.
 4. **Prepare project foundation documents** — add required Phase 0 files and this Kanban/roadmap definition.
 5. **Publish approved Phase 0 baseline** — owner-authorized initial Git bootstrap and publication to `main`/`develop`; do not create a live board or issues.
 

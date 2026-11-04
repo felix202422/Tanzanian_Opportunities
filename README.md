@@ -4,7 +4,7 @@ TDOP is a planned bilingual platform for discovering, evaluating, publishing and
 
 ## Project status
 
-**Phase 0 — Project foundation and planning.** The local workspace and public GitHub repository were empty at inspection. The Phase 0 planning baseline, including `versions.md`, is now published on `main` and `develop`. There is no runnable backend, frontend, database schema or deployment configuration yet. No live GitHub board or issue cards exist. Phase 1 will begin only after separate owner approval.
+**Phase 0 — Project foundation and planning.** The local workspace and public GitHub repository were empty at inspection. The Phase 0 planning baseline, including `VERSIONS.md`, is published on `main` and `develop`. There is no runnable backend, frontend, database schema or deployment configuration yet. The requested live Kanban board is approved but not provisioned because this session is not authenticated to GitHub; see the [roadmap](docs/ROADMAP.md). Phase 1 will begin only after separate owner approval.
 
 ## Objectives
 
@@ -35,7 +35,7 @@ These are plans, not implemented features. See the [roadmap](docs/ROADMAP.md) fo
 
 ## Technology direction
 
-The proposed stack is Java 25 LTS with Spring Boot 4.1.2, PostgreSQL 18.6 with Flyway, and a React 19/TypeScript frontend built with Vite and Tailwind CSS 4. Versions were checked on 2026-11-04; see the [version baseline](versions.md) and [architecture decisions](docs/DECISIONS.md). Re-check and lock versions during Phase 1 before project initialization.
+The proposed stack is Java 25 LTS with Spring Boot 4.1.2, PostgreSQL 18.6 with Flyway, and a React 19/TypeScript frontend built with Vite and Tailwind CSS 4. Versions were checked on 2026-11-04; see the [version baseline](VERSIONS.md) and [architecture decisions](docs/DECISIONS.md). Re-check and lock versions during Phase 1 before project initialization.
 
 ## Architecture overview
 
@@ -80,7 +80,7 @@ None yet. Screenshots will be added after the public website and responsive inte
 
 ## Contributing
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). The documented workflow uses `main`, `develop`, feature branches and pull requests. The initial Phase 0 baseline is published to both branches. A live Kanban board has not been created; the workflow is documented in [CONTRIBUTING.md](CONTRIBUTING.md) and [the roadmap](docs/ROADMAP.md).
+Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). The documented workflow uses `main`, `develop`, feature branches and pull requests. The initial Phase 0 baseline is published to both branches. Live Kanban board creation is approved but awaits GitHub authentication; see [CONTRIBUTING.md](CONTRIBUTING.md) and [the roadmap](docs/ROADMAP.md).
 
 ## Security
 

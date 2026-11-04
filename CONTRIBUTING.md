@@ -21,7 +21,7 @@ The documented branch model is:
 
 Open a pull request into `develop`, describe the change and its acceptance criteria, link the issue, and include tests and documentation updates where relevant. Releases are reviewed and merged from `develop` to `main`. The owner explicitly approved the one-time initial Phase 0 bootstrap directly to `main`; this is not a pattern for subsequent work. Never push directly to `main` outside an explicitly approved empty-repository bootstrap.
 
-The repository was empty at initial inspection. The Phase 0 baseline has been published to `main` and `develop`, which currently share the initial commit. No live GitHub Projects board or issue cards have been created; see [the roadmap](docs/ROADMAP.md) for status.
+The repository was empty at initial inspection. The Phase 0 baseline has been published to `main` and `develop`. The owner has approved creating a live GitHub Projects board, but setup is pending GitHub authentication; no board or issue cards exist yet. See [the roadmap](docs/ROADMAP.md) for status.
 
 ## Kanban workflow
 
