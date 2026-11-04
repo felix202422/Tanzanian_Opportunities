@@ -67,4 +67,4 @@ Measure real service outcomes only after implementation and privacy review: vali
 
 ## Current delivery status
 
-The repository was empty at initial inspection. The owner authorized publishing the Phase 0 planning baseline to `main` and establishing `develop`; see [Roadmap](ROADMAP.md) for actual Git/push status. No live GitHub Projects board or issue cards have been created. Application code remains unimplemented.
+The repository was empty at initial inspection. The Phase 0 planning baseline is now published to `main` and `develop`. No live GitHub Projects board or issue cards have been created. Application code remains unimplemented.

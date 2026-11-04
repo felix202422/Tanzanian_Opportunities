@@ -21,7 +21,7 @@ An item must not skip required states or be marked Done because work was merely 
 
 | Phase | Status | Gate / outcome |
 | --- | --- | --- |
-| 0 — Foundation and planning | **Done locally; publication status tracked below** | Requirements, MVP, architecture, version candidates, policies, decisions and roadmap documented; no application code. |
+| 0 — Foundation and planning | **Done and published; Phase 1 awaits approval** | Requirements, MVP, architecture, version candidates, policies, decisions and roadmap documented; no application code. Baseline is on `main` and `develop`. |
 | 1 — Repository and development environment | Backlog / approval-gated | Monorepo, wrappers, frontend/backend scaffolds, linting, environment templates and local services. |
 | 2 — Database architecture | Backlog | ER design, PostgreSQL connectivity, Flyway migrations, seed profile and integrity tests. |
 | 3 — Backend core architecture | Backlog | Layers, DTOs, validation, errors, logging, API versioning, OpenAPI and health endpoints. |
@@ -40,6 +40,14 @@ An item must not skip required states or be marked Done because work was merely 
 | 16 — Quality assurance | Backlog | Unit, integration, security, component, end-to-end, performance and accessibility coverage. |
 | 17 — Production readiness | Backlog | Production configuration, HTTPS, backups, monitoring, CI/CD and rollback. |
 | 18 — Handover | Backlog | Final technical review, release notes, known limits and verified handover. |
+
+## Repository publication
+
+- The local repository was initialized on `main`; the owner-approved Phase 0 baseline was committed and pushed to GitHub.
+- Both `main` and `develop` were verified on the remote at the same initial Phase 0 commit. The local `main` branch tracks `origin/main`; `develop` tracks `origin/develop`.
+- The initial direct push to `main` was an explicit empty-repository bootstrap exception. Future work follows the pull-request workflow in [CONTRIBUTING.md](../CONTRIBUTING.md).
+- No live GitHub Projects board or issue cards were created. The Kanban workflow is documented locally and in this repository.
+- Phase 1 remains blocked until separate owner approval.
 
 ## Phase 0 issue plan and acceptance
 

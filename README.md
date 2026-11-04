@@ -4,7 +4,7 @@ TDOP is a planned bilingual platform for discovering, evaluating, publishing and
 
 ## Project status
 
-**Phase 0 — Project foundation and planning.** The local workspace and public GitHub repository were empty at inspection. This phase establishes requirements and architecture only: there is no runnable backend, frontend, database schema or deployment configuration yet. The owner has authorized publishing the Phase 0 baseline; current Git/push status is recorded in the [roadmap](docs/ROADMAP.md). No live GitHub board exists. Phase 1 will begin only after separate owner approval.
+**Phase 0 — Project foundation and planning.** The local workspace and public GitHub repository were empty at inspection. The Phase 0 planning baseline, including `versions.md`, is now published on `main` and `develop`. There is no runnable backend, frontend, database schema or deployment configuration yet. No live GitHub board or issue cards exist. Phase 1 will begin only after separate owner approval.
 
 ## Objectives
 
@@ -80,7 +80,7 @@ None yet. Screenshots will be added after the public website and responsive inte
 
 ## Contributing
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). The documented workflow uses `main`, `develop`, feature branches and pull requests. The owner authorized publication of the Phase 0 baseline to `main`/`develop`; see the [roadmap](docs/ROADMAP.md) for the actual remote state. A live Kanban board has not been created.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). The documented workflow uses `main`, `develop`, feature branches and pull requests. The initial Phase 0 baseline is published to both branches. A live Kanban board has not been created; the workflow is documented in [CONTRIBUTING.md](CONTRIBUTING.md) and [the roadmap](docs/ROADMAP.md).
 
 ## Security
 

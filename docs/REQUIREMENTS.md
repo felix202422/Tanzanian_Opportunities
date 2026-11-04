@@ -94,4 +94,4 @@ Each feature must have verifiable acceptance criteria, automated tests appropria
 
 ## Out of scope for Phase 0
 
-No backend/frontend scaffold, API implementation, schema or migrations, dependencies, Docker services, live GitHub board/issues or Phase 1 implementation are part of Phase 0. The owner separately authorized a local Git bootstrap and publication of only the approved Phase 0 artifacts to `main` and `develop`; this does not authorize other remote changes.
+No backend/frontend scaffold, API implementation, schema or migrations, dependencies, Docker services, live GitHub board/issues or Phase 1 implementation are part of Phase 0. The owner authorized, and the project has completed, a local Git bootstrap and publication of only the approved Phase 0 artifacts to `main` and `develop`; this does not authorize other remote changes.

@@ -73,9 +73,9 @@ Sources: [Node.js releases](https://nodejs.org/en/about/previous-releases), [Rea
 
 This is a candidate compatibility matrix, not a tested lockfile. Phase 1 must create reproducible lockfiles and verify install, build, lint and type-check on the target environment. Use TypeScript strict mode and do not introduce `any` without justification.
 
-## D-011 — GitHub workflow is documented, not remotely provisioned
+## D-011 — Bootstrap the documented Git workflow; defer the live board
 
-**Status:** Accepted. Use `main`, `develop`, `feature/*`, `fix/*` and `docs/*` with pull requests and Conventional Commit messages. Track work through Backlog → To Do → In Progress → Code Review → Testing → Done. The owner authorized the initial Git bootstrap and publication of approved Phase 0 files to `main` and `develop`; actual branch and push state is recorded in [Roadmap](ROADMAP.md). No live Project board or issue cards are authorized by this decision.
+**Status:** Accepted and bootstrapped. Use `main`, `develop`, `feature/*`, `fix/*` and `docs/*` with pull requests and Conventional Commit messages. Track work through Backlog → To Do → In Progress → Code Review → Testing → Done. The owner authorized the initial commit and the Phase 0 baseline was pushed to both `main` and `develop`. The live GitHub Project board and issue cards remain uncreated; see [Roadmap](ROADMAP.md).
 
 ## D-012 — License the project under Apache-2.0
 
