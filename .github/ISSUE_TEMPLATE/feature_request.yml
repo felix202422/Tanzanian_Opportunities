@@ -1,0 +1,34 @@
+name: Feature request
+description: Propose a scoped, user-centered improvement.
+title: "[feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: user-problem
+    attributes:
+      label: User problem
+      description: Who needs this and what problem are they trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed outcome
+      description: Describe the desired behavior without prescribing unnecessary implementation details.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable conditions that would demonstrate completion.
+      placeholder: |
+        - [ ] Given ... when ... then ...
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: Privacy, security, accessibility or operational considerations
+    validations:
+      required: false

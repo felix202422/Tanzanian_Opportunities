@@ -98,7 +98,7 @@ docs/             Product, design, architecture and operations docs
 .github/          CI workflows, issue forms and PR template
 ```
 
-Only root policy files and Phase 0 documentation are being created now. The directory plan is not a claim that these folders exist.
+The planned backend and frontend scaffolds are being initialized in Phase 1. Domain modules, migrations, APIs, object storage and production infrastructure remain future-phase work; the architecture diagram is not a claim that those systems exist.
 
 ## Open decisions for later phases
 

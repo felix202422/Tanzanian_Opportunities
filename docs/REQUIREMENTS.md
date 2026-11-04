@@ -94,4 +94,4 @@ Each feature must have verifiable acceptance criteria, automated tests appropria
 
 ## Out of scope for Phase 0
 
-No backend/frontend scaffold, API implementation, schema or migrations, dependencies, Docker services or Phase 1 implementation are part of Phase 0. The owner authorized and completed the local Git bootstrap and publication of approved Phase 0 artifacts to `main` and `develop`. Live GitHub board creation is separately owner-approved but is pending GitHub authentication; no issues or board have been created yet.
+No backend/frontend scaffold, API implementation, schema or migrations, dependencies, Docker services or Phase 1 implementation are part of Phase 0. The owner authorized and completed the local Git bootstrap and publication of approved Phase 0 artifacts to `main` and `develop`. Live GitHub board creation was separately owner-approved and has since been provisioned and verified as [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3) with one issue card per roadmap phase.
