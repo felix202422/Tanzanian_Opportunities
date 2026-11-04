@@ -89,3 +89,7 @@ This is a candidate compatibility matrix, not a tested lockfile. Phase 1 must cr
 ## D-014 — Treat repository truth and product data honestly
 
 **Status:** Accepted. Documentation, product status and analytics must distinguish plans from implemented behavior. Production dashboard statistics must come from actual backend data. Development seed data is isolated from production.
+
+## D-015 — Accept Phase 1 as incomplete in Testing; do not start Phase 2
+
+**Status:** Owner decision recorded 2026-11-04. Phase 1 was approved and merged to `develop` as `50766b3` through PR #1 with both CI jobs green, but its required manual check — `docker compose up -d postgres` (service start, healthcheck, named volume) — was not performed because Docker is not installed on the implementation host. The owner was offered the choice to waive that criterion and declined: the criterion is **not** waived, Phase 1 remains **incomplete in Testing**, and its board card stays in Testing rather than being marked Done. Phase 2 (Database architecture) has **not** been started; the phase gate stays closed until Phase 1 reaches Done and the owner gives separate approval. Record the Docker verification (or a new explicit owner decision) on issue #3 before changing the card.

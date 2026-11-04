@@ -4,7 +4,7 @@ TDOP is a planned bilingual platform for discovering, evaluating, publishing and
 
 ## Project status
 
-**Phase 1 — Repository foundation merged; in testing.** Phase 0 is marked complete by the project owner. The Phase 0 planning baseline, including `VERSIONS.md`, is published on `main` and `develop`; the Phase 1 foundation was delivered through [PR #1](https://github.com/felix202422/Tanzanian_Opportunities/pull/1), owner-approved and merged to `develop` as `50766b3` with both CI jobs green. Its card sits in Testing on [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3) because the required `docker compose` startup check is outstanding: Docker is not installed on the implementation host. Backend/frontend scaffolds and quality tooling all pass locally. No opportunity, authentication or other product features are implemented yet.
+**Phase 1 — Repository foundation merged; incomplete in Testing.** Phase 0 is marked complete by the project owner. The Phase 0 planning baseline, including `VERSIONS.md`, is published on `main` and `develop`; the Phase 1 foundation was delivered through [PR #1](https://github.com/felix202422/Tanzanian_Opportunities/pull/1), owner-approved and merged to `develop` as `50766b3` with both CI jobs green. The phase is **not Done**: the required `docker compose` startup check could not be run because Docker is not installed here, and the owner declined to waive it (see [D-015](docs/DECISIONS.md)), so its card stays in Testing on [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3). Phase 2 has not been started. Backend/frontend scaffolds and quality tooling all pass locally. No opportunity, authentication or other product features are implemented yet.
 
 ## Objectives
 

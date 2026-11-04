@@ -1,6 +1,6 @@
 # TDOP Roadmap and Kanban
 
-**Last updated:** 2026-11-04. Phase 0 is complete by owner direction. Phase 1 was owner-approved and merged to `develop` as `50766b3` with both CI jobs green; its board card is in Testing pending the Docker manual check. The live GitHub Kanban board has been provisioned and linked to this repository.
+**Last updated:** 2026-11-04. Phase 0 is complete by owner direction. Phase 1 was owner-approved and merged to `develop` as `50766b3` with both CI jobs green, but remains **incomplete in Testing**: the owner declined to waive the unperformed Docker check (see D-015), and Phase 2 has not been started. The live GitHub Kanban board has been provisioned and linked to this repository.
 
 ## Kanban workflow
 
@@ -22,7 +22,7 @@ An item must not skip required states or be marked Done because work was merely 
 | Phase | Status | Gate / outcome |
 | --- | --- | --- |
 | 0 — Foundation and planning | **Done and owner-accepted** | Requirements, MVP, architecture, versions, policies and roadmap published to `main` and `develop`; its board card is Done. |
-| 1 — Repository and development environment | **Testing** | Implemented in PR #1, owner-approved and merged to `develop` as `50766b3`; CI passed (backend verification + frontend quality checks). Outstanding required manual check: Docker is not installed on the implementation host, so `docker compose up` startup is not yet verified. Card stays in Testing until that runs or the owner changes the criterion. |
+| 1 — Repository and development environment | **Testing (incomplete)** | Implemented in PR #1, owner-approved and merged to `develop` as `50766b3`; CI passed (backend verification + frontend quality checks). Required manual check not performed: Docker is not installed on the implementation host, so `docker compose up` startup is unverified. The owner declined to waive this (D-015), so the phase is not Done and Phase 2 must not start. |
 | 2 — Database architecture | Backlog | ER design, PostgreSQL connectivity, Flyway migrations, seed profile and integrity tests. |
 | 3 — Backend core architecture | Backlog | Layers, DTOs, validation, errors, logging, API versioning, OpenAPI and health endpoints. |
 | 4 — Authentication and authorization | Backlog | Registration, login, password hashing, tokens, revocation, roles and security tests. |
@@ -67,7 +67,7 @@ Phase 0 consisted of local planning work items:
 4. **Prepare project foundation documents** — add required Phase 0 files and this Kanban/roadmap definition.
 5. **Publish approved Phase 0 baseline** — owner-authorized initial Git bootstrap and publication to `main`/`develop`; do not create a live board or issues.
 
-Phase 0 acceptance requires these documents to agree, exact version claims to have sources/date, MVP boundaries to be explicit, and no claim of unimplemented functionality or fabricated test results. The owner has accepted Phase 0 complete, and the separately approved live board has since been provisioned and verified. Phase 1 is owner-approved and merged with CI green; it remains in Testing until the Docker manual check is performed.
+Phase 0 acceptance requires these documents to agree, exact version claims to have sources/date, MVP boundaries to be explicit, and no claim of unimplemented functionality or fabricated test results. The owner has accepted Phase 0 complete, and the separately approved live board has since been provisioned and verified. Phase 1 is owner-approved and merged with CI green but explicitly incomplete in Testing (D-015); Phase 2 must not start until the Docker check is recorded or the owner issues a new decision.
 
 ## Phase gate rules
 
