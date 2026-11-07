@@ -13,6 +13,28 @@ jobs:
   backend:
     name: Backend verification
     runs-on: ubuntu-latest
+    services:
+      # Flyway migrations and integrity tests run against a real PostgreSQL in CI.
+      # The container is ephemeral and job-local, so it uses trust authentication on the
+      # runner's private network instead of carrying a committed credential.
+      postgres:
+        image: postgres:18.6-alpine
+        env:
+          POSTGRES_DB: tdop_test
+          POSTGRES_USER: tdop_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tdop_test -d tdop_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 12
+          --health-start-period 10s
+    env:
+      TDOP_TEST_DB_URL: jdbc:postgresql://127.0.0.1:5432/tdop_test
+      TDOP_TEST_DB_USERNAME: tdop_test
+      TDOP_TEST_DB_PASSWORD: ""
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

@@ -1,6 +1,6 @@
 # TDOP Roadmap and Kanban
 
-**Last updated:** 2026-11-04. Phase 0 is complete by owner direction. Phase 1 was owner-approved and merged to `develop` as `50766b3` with both CI jobs green, but remains **incomplete in Testing**: the owner declined to waive the unperformed Docker check (see D-015), and Phase 2 has not been started. The live GitHub Kanban board has been provisioned and linked to this repository.
+**Last updated:** 2026-11-04. Phase 0 is complete by owner direction. Phase 1 was owner-approved and merged to `develop` as `50766b3` with both CI jobs green but remains **incomplete in Testing**: the owner declined to waive the unperformed Docker check (see D-015). The owner then authorized starting Phase 2 while Phase 1 stays incomplete (see D-016); Phase 2 is **In Progress**. The live GitHub Kanban board has been provisioned and linked to this repository.
 
 ## Kanban workflow
 
@@ -22,8 +22,8 @@ An item must not skip required states or be marked Done because work was merely 
 | Phase | Status | Gate / outcome |
 | --- | --- | --- |
 | 0 — Foundation and planning | **Done and owner-accepted** | Requirements, MVP, architecture, versions, policies and roadmap published to `main` and `develop`; its board card is Done. |
-| 1 — Repository and development environment | **Testing (incomplete)** | Implemented in PR #1, owner-approved and merged to `develop` as `50766b3`; CI passed (backend verification + frontend quality checks). Required manual check not performed: Docker is not installed on the implementation host, so `docker compose up` startup is unverified. The owner declined to waive this (D-015), so the phase is not Done and Phase 2 must not start. |
-| 2 — Database architecture | Backlog | ER design, PostgreSQL connectivity, Flyway migrations, seed profile and integrity tests. |
+| 1 — Repository and development environment | **Testing (incomplete)** | Implemented in PR #1, owner-approved and merged to `develop` as `50766b3`; CI passed (backend verification + frontend quality checks). Required manual check not performed: Docker is not installed on the implementation host, so `docker compose up` startup is unverified. The owner declined to waive this (D-015), so the phase is not Done. Its outstanding check does not block Phase 2, which the owner authorized separately (D-016). |
+| 2 — Database architecture | **In Progress** | Started 2026-11-04 under owner authorization D-016 while Phase 1 remains incomplete in Testing. Scope: ER design, PostgreSQL connectivity, Flyway migrations, seed profile and integrity tests. Acceptance: migrations apply from an empty database, rollback/forward checks are documented, persistence tests pass. |
 | 3 — Backend core architecture | Backlog | Layers, DTOs, validation, errors, logging, API versioning, OpenAPI and health endpoints. |
 | 4 — Authentication and authorization | Backlog | Registration, login, password hashing, tokens, revocation, roles and security tests. |
 | 5 — User and profile management | Backlog | Seeker profile, education, skills, experience, preferences and safe media upload. |
@@ -47,14 +47,14 @@ An item must not skip required states or be marked Done because work was merely 
 - Both `main` and `develop` were verified on the remote at the same initial Phase 0 commit. The local `main` branch tracks `origin/main`; `develop` tracks `origin/develop`.
 - The initial direct push to `main` was an explicit empty-repository bootstrap exception. Future work follows the pull-request workflow in [CONTRIBUTING.md](../CONTRIBUTING.md).
 - A live GitHub Projects board exists at [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3), linked to this repository, with one card per roadmap phase. `gh auth status` still reports no interactive login for this session; board provisioning was performed with the repository owner's stored Git credentials via the GitHub API, and the resulting project, Status field options and cards were verified by reading them back from the API.
-- Phase 1 was started with owner approval; later phases remain gated.
+- Phase 1 was started with owner approval; Phase 2 was authorized by the owner on 2026-11-04 (D-016) while Phase 1 remains incomplete in Testing. Later phases remain gated.
 
 ## Live Kanban board provisioning
 
 - **Project:** [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3), created on 2026-11-04 with the repository owner's stored Git credentials through the GitHub GraphQL/REST API and linked to `felix202422/Tanzanian_Opportunities`.
 - **Workflow statuses:** Backlog → To Do → In Progress → Code Review → Testing → Done, configured as the single-select `Status` field's options in that order.
 - **Cards:** one issue per roadmap phase, issues #2–#20 (Phases 0–18), each carrying scope, acceptance criteria, the workflow rule and a pointer to this document.
-- **Verified state:** read back from the API on 2026-11-04 — 19 items, Phase 0 Done, Phase 1 Testing, Phases 2–18 Backlog. Comments recording the Phase 1 CI results, merge and the outstanding Docker blocker are attached to [issue #3](https://github.com/felix202422/Tanzanian_Opportunities/issues/3).
+- **Verified state:** read back from the API on 2026-11-04 — 19 items, Phase 0 Done, Phase 1 Testing, Phase 2 In Progress, Phases 3–18 Backlog. Comments recording the Phase 1 CI results, merge and the outstanding Docker blocker are attached to [issue #3](https://github.com/felix202422/Tanzanian_Opportunities/issues/3); the Phase 2 start is recorded on [issue #4](https://github.com/felix202422/Tanzanian_Opportunities/issues/4).
 - **Reproducibility:** the provisioning used temporary scripts outside the repository; the board itself is the persistent artifact. Re-running provisioning would create duplicates, so treat the live project as the source of truth.
 
 ## Phase 0 issue plan and acceptance
@@ -67,7 +67,7 @@ Phase 0 consisted of local planning work items:
 4. **Prepare project foundation documents** — add required Phase 0 files and this Kanban/roadmap definition.
 5. **Publish approved Phase 0 baseline** — owner-authorized initial Git bootstrap and publication to `main`/`develop`; do not create a live board or issues.
 
-Phase 0 acceptance requires these documents to agree, exact version claims to have sources/date, MVP boundaries to be explicit, and no claim of unimplemented functionality or fabricated test results. The owner has accepted Phase 0 complete, and the separately approved live board has since been provisioned and verified. Phase 1 is owner-approved and merged with CI green but explicitly incomplete in Testing (D-015); Phase 2 must not start until the Docker check is recorded or the owner issues a new decision.
+Phase 0 acceptance requires these documents to agree, exact version claims to have sources/date, MVP boundaries to be explicit, and no claim of unimplemented functionality or fabricated test results. The owner has accepted Phase 0 complete, and the separately approved live board has since been provisioned and verified. Phase 1 is owner-approved and merged with CI green but explicitly incomplete in Testing (D-015); the owner authorized starting Phase 2 without waiving that outstanding check (D-016).
 
 ## Phase gate rules
 

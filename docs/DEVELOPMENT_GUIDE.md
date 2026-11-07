@@ -1,6 +1,6 @@
 # Development Guide
 
-**Status:** Phase 1 foundation, merged to `develop` after owner approval. The backend and frontend are scaffolded; opportunity, identity, database and application features are not yet implemented. Actual command results are in the [Phase 1 verification record](#phase-1-verification-record-2026-11-04) below.
+**Status:** Phase 1 foundation merged to `develop` after owner approval; Phase 2 database architecture is in progress on `feature/phase2-database-architecture`. Flyway migrations, the development seed and database integrity tests exist; HTTP API, identity and application features are not yet implemented. Actual command results are in the [Phase 1](#phase-1-verification-record-2026-11-04) and [Phase 2](#phase-2-verification-record-2026-11-07) verification records below.
 
 ## Prerequisites
 
@@ -33,7 +33,12 @@ docker compose ps
 
 The PostgreSQL 18.6 service binds to loopback only and persists data in the named `tdop_postgres_data` volume. Stop it without deleting the data using `docker compose down`. To delete local database data, use `docker compose down --volumes` only when intentionally resetting your own development database.
 
-Phase 1 provides the PostgreSQL service but no Flyway schema or database-backed application feature; those are Phase 2 and later.
+Phase 1 provides the PostgreSQL service. Phase 2 adds the Flyway schema (`V1`–`V4`), the development seed and database-backed tests. Two ways to reach a database:
+
+- **Docker (preferred once Docker is available):** `docker compose up -d postgres` starts PostgreSQL 18.6 with the `tdop_dev`/`tdop_test` databases from `.env`.
+- **Existing local PostgreSQL (D-017):** the backend reads `TDOP_DB_URL`, `TDOP_DB_USERNAME` and `TDOP_DB_PASSWORD` from the environment only — copy the commented block in `.env.example` into your gitignored `.env` and fill in your own values. Never commit them.
+
+Tests use a separate `tdop_test` database (`TDOP_TEST_DB_*`, falling back to `TDOP_DB_*`), so a test run never touches development data.
 
 ## Run the backend
 
@@ -50,6 +55,20 @@ make backend-run
 ```
 
 The Spring Boot foundation listens on `http://localhost:8080` by default. If that port is occupied, change `SERVER_PORT` in `.env`; the Vite proxy uses the same value unless `TDOP_API_PROXY_TARGET` is set. The API has no product endpoints yet. Stop the process with `Ctrl+C`.
+
+### Load development seed data
+
+Seed data is applied only when the Spring `seed` profile is active (see `docs/DATA_MODEL.md` §6.2); a normal start never writes it:
+
+```powershell
+./scripts/dev.ps1 backend-run-seed
+```
+
+```sh
+make backend-run-seed
+```
+
+Re-running is safe: every seed row uses a fixed UUID and `ON CONFLICT DO NOTHING`.
 
 ## Run the frontend
 
@@ -122,6 +141,24 @@ Actual results from the Phase 1 implementation host (Windows 11, Oracle JDK 25.0
 
 Note on ports: this machine already uses ports 8080, 5173 and 5174 for unrelated applications, so `.env` was set locally (gitignored) to `SERVER_PORT=8081` and `VITE_DEV_PORT=5176` for the smoke runs. The committed defaults remain 8080/5173 with strict port binding so a clash fails loudly instead of attaching to another app.
 
+## Phase 2 verification record (2026-11-07)
+
+Actual results from the Phase 2 implementation host (Windows 11, Oracle JDK 25.0.4.1, local PostgreSQL 18.6 service on `127.0.0.1:5432`):
+
+| Check | Result |
+| --- | --- |
+| `backend ./mvnw.cmd -B verify` | **BUILD SUCCESS** (exit 0), total time 43.5 s. **Tests run: 23, Failures: 0, Errors: 0, Skipped: 0.** |
+| `FlywayMigrationTest` (3 tests) | Migrations `V1`–`V4` apply from an empty database with the expected script order and all 21 application tables; every history row reports success; `flyway validate` clean. Re-applying `migrate()` is a no-op. Dropping the schema and replaying reproduces a byte-identical snapshot of tables, columns, defaults, constraints and indexes. |
+| `SchemaIntegrityTest` (14 tests) | Against the real schema: FK violation `23503`, duplicate e-mail ignoring case `23505`, duplicate category code `23505`, duplicate application `23505`, duplicate saved opportunity `23505`, `closes_at < opens_at` `23514`, `EXTERNAL` without `external_url` `23514`, `PUBLISHED` without `APPROVED` `23514`, missing required column `23502`, status outside its vocabulary `23514`, non-object JSONB `23514`, `ON DELETE RESTRICT` `23001` (not `23503` — corrected after the first run), cascade delete of profile rows, and a JSONB write/read round trip. |
+| `SeedProfileTest` (5 tests) | With `@ActiveProfiles("seed")`: 12 bilingual categories; versioned attribute definitions with `ENUM` allowed-values; every seeded opportunity attribute covered by its category's schema at its pinned version; 3 development actors whose password hashes are all `PLACEHOLDER%`; publication rules hold (no `PUBLISHED` without `APPROVED`, no `EXTERNAL` without a destination). |
+| `formatter:validate` (2.29.0) | Passes — 0 changes required. |
+| First failing runs (honest record) | The initial runs failed: a missing `ActiveProfiles` import, an undeclared `throws Exception`, `String` bound to `uuid` columns (fixed by using `java.util.UUID`), rows leaking between test classes (fixed by truncating before **and** after each class, and by scoping seed assertions to the seed UUID prefix), and the `23503`→`23001` RESTRICT correction above. All fixed; the table above is the post-fix state. |
+| CI (Postgres service) | Pending — the branch had not been pushed when this record was written; updated below once CI ran. |
+| Docker / `docker compose` | **Still not verified** — Docker is not installed on this host (D-015, not waived). Phase 1 remains incomplete in Testing for this reason. |
+| Board | Phase 2 card: Backlog → To Do → In Progress (verified read-back). Phase 1 card left at Testing. |
+
+Local databases used (D-017): `tdop_dev` for development runs and `tdop_test` for tests, both owned by the non-superuser role `tdop_app`. Credentials live only in the gitignored `.env` / process environment; nothing was written into this repository. The orphaned pre-existing `tdop` database was left untouched by owner decision.
+
 ## Current environment note
 
-The Phase 1 implementation host has JDK 25.0.4.1, Maven 3.9.16, Node 24.13.1 and npm 11.8.0. The project wrappers target Maven 3.10.0 and Node 26.13.0; the installed Node 24 release meets the declared engine range. The Docker CLI is not installed in the implementation environment, so Compose startup remains unverified until Docker Desktop is available.
+The implementation host has JDK 25.0.4.1, Maven 3.9.16, Node 24.13.1 and npm 11.8.0. The project wrappers target Maven 3.10.0 and Node 26.13.0; the installed Node 24 release meets the declared engine range. The Docker CLI is not installed in the implementation environment, so Compose startup remains unverified until Docker Desktop is available. Phase 2 therefore verifies against the host's own PostgreSQL 18.6 service rather than the Compose container.
