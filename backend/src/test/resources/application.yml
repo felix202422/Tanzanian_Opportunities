@@ -1,0 +1,19 @@
+# Test-classpath configuration. This file shadows src/main/resources/application.yml for
+# tests, so every Spring test talks to a dedicated test database and never to development
+# data. Credentials come from the environment only (D-017) and are never committed.
+spring:
+  application:
+    name: tdop-api
+  datasource:
+    url: ${TDOP_TEST_DB_URL:jdbc:postgresql://127.0.0.1:5432/tdop_test}
+    username: ${TDOP_TEST_DB_USERNAME:tdop_app}
+    password: ${TDOP_TEST_DB_PASSWORD:${TDOP_DB_PASSWORD:}}
+    hikari:
+      maximum-pool-size: 2
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+
+server:
+  port: 0

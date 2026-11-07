@@ -7,6 +7,7 @@ param(
         "db-down",
         "compose-config",
         "backend-run",
+        "backend-run-seed",
         "backend-test",
         "frontend-install",
         "frontend-dev",
@@ -74,12 +75,16 @@ function Invoke-CheckedCommand {
 
 switch ($Task) {
     "help" {
-        Write-Output "Tasks: db-up, db-down, compose-config, backend-run, backend-test, frontend-install, frontend-dev, frontend-lint, frontend-typecheck, frontend-format, frontend-format-check, frontend-build, check"
+        Write-Output "Tasks: db-up, db-down, compose-config, backend-run, backend-run-seed, backend-test, frontend-install, frontend-dev, frontend-lint, frontend-typecheck, frontend-format, frontend-format-check, frontend-build, check"
     }
     "db-up" { Invoke-CheckedCommand $RepositoryRoot "docker" @("compose", "up", "-d", "postgres") }
     "db-down" { Invoke-CheckedCommand $RepositoryRoot "docker" @("compose", "down") }
     "compose-config" { Invoke-CheckedCommand $RepositoryRoot "docker" @("compose", "config") }
     "backend-run" { Invoke-CheckedCommand $BackendDirectory ".\mvnw.cmd" @("spring-boot:run") }
+    "backend-run-seed" {
+        $env:SPRING_PROFILES_ACTIVE = "seed"
+        Invoke-CheckedCommand $BackendDirectory ".\mvnw.cmd" @("spring-boot:run")
+    }
     "backend-test" { Invoke-CheckedCommand $BackendDirectory ".\mvnw.cmd" @("-B", "verify") }
     "frontend-install" { Invoke-CheckedCommand $FrontendDirectory "npm" @("ci") }
     "frontend-dev" { Invoke-CheckedCommand $FrontendDirectory "npm" @("run", "dev") }

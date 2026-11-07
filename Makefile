@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-.PHONY: help db-up db-down compose-config backend-run backend-test frontend-install frontend-dev frontend-lint frontend-typecheck frontend-format frontend-format-check frontend-build check
+.PHONY: help db-up db-down compose-config backend-run backend-run-seed backend-test frontend-install frontend-dev frontend-lint frontend-typecheck frontend-format frontend-format-check frontend-build check
 
 help: ## Show available development tasks
 	@grep -E '^[a-zA-Z0-9_-]+:.*## ' Makefile | sort | awk 'BEGIN {FS = ":.*## "} {printf "%-24s %s\n", $$1, $$2}'
@@ -17,8 +17,11 @@ compose-config: ## Validate Compose configuration
 backend-run: ## Run the Spring Boot backend
 	set -a; if [ -f .env ]; then . ./.env; fi; set +a; cd backend && ./mvnw spring-boot:run
 
-backend-test: ## Verify and test the backend
-	cd backend && ./mvnw -B verify
+backend-test: ## Verify and test the backend (loads .env so the test database is reachable)
+	set -a; if [ -f .env ]; then . ./.env; fi; set +a; cd backend && ./mvnw -B verify
+
+backend-run-seed: ## Run the backend with development seed data (seed profile)
+	set -a; if [ -f .env ]; then . ./.env; fi; set +a; cd backend && SPRING_PROFILES_ACTIVE=seed ./mvnw spring-boot:run
 
 frontend-install: ## Install frontend dependencies from the lockfile
 	npm ci --prefix frontend

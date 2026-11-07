@@ -93,3 +93,11 @@ This is a candidate compatibility matrix, not a tested lockfile. Phase 1 must cr
 ## D-015 — Accept Phase 1 as incomplete in Testing; do not start Phase 2
 
 **Status:** Owner decision recorded 2026-11-04. Phase 1 was approved and merged to `develop` as `50766b3` through PR #1 with both CI jobs green, but its required manual check — `docker compose up -d postgres` (service start, healthcheck, named volume) — was not performed because Docker is not installed on the implementation host. The owner was offered the choice to waive that criterion and declined: the criterion is **not** waived, Phase 1 remains **incomplete in Testing**, and its board card stays in Testing rather than being marked Done. Phase 2 (Database architecture) has **not** been started; the phase gate stays closed until Phase 1 reaches Done and the owner gives separate approval. Record the Docker verification (or a new explicit owner decision) on issue #3 before changing the card.
+
+## D-016 — Authorize Phase 2 while Phase 1 stays incomplete in Testing
+
+**Status:** Owner decision recorded 2026-11-04 ("ok move to phase 2"), superseding **only** the D-015 clause that closed the Phase 2 gate. D-015 itself still stands: the Phase 1 Docker Compose check is **not** waived, Phase 1 remains **incomplete in Testing**, and its card must not be moved to Done on CI/merge evidence alone. Phase 2 (Database architecture) may now proceed under the normal workflow — card moved Backlog → To Do → In Progress, implementation on `feature/phase2-database-architecture`, review through a pull request into `develop`, and no Done until its acceptance criteria are verified (migrations apply from an empty database, rollback/forward checks documented, persistence tests pass).
+
+## D-017 — Database access for development and tests
+
+**Status:** Accepted 2026-11-04. Local development and integration tests run against the owner-supplied local PostgreSQL 18.6 instance on `127.0.0.1:5432`. Credentials are provided by the owner and are used **in memory only**: they are never written into the repository, documentation, logs or test output. Application and test configuration reads them from environment variables, and CI uses its own service-container credentials. Dedicated `tdop_dev` and `tdop_test` databases and a non-superuser role are used instead of the `postgres` superuser for day-to-day runs.
