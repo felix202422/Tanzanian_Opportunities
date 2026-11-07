@@ -153,7 +153,7 @@ Actual results from the Phase 2 implementation host (Windows 11, Oracle JDK 25.0
 | `SeedProfileTest` (5 tests) | With `@ActiveProfiles("seed")`: 12 bilingual categories; versioned attribute definitions with `ENUM` allowed-values; every seeded opportunity attribute covered by its category's schema at its pinned version; 3 development actors whose password hashes are all `PLACEHOLDER%`; publication rules hold (no `PUBLISHED` without `APPROVED`, no `EXTERNAL` without a destination). |
 | `formatter:validate` (2.29.0) | Passes — 0 changes required. |
 | First failing runs (honest record) | The initial runs failed: a missing `ActiveProfiles` import, an undeclared `throws Exception`, `String` bound to `uuid` columns (fixed by using `java.util.UUID`), rows leaking between test classes (fixed by truncating before **and** after each class, and by scoping seed assertions to the seed UUID prefix), and the `23503`→`23001` RESTRICT correction above. All fixed; the table above is the post-fix state. |
-| CI (Postgres service) | Pending — the branch had not been pushed when this record was written; updated below once CI ran. |
+| CI (Postgres service) | GitHub Actions run [`42391643651`](https://github.com/felix202422/Tanzanian_Opportunities/actions/runs/42391643651) on PR #23, commit `c134769`: `Backend verification` **success** (with the `postgres:18.6-alpine` service container) and `Frontend quality checks` **success**. |
 | Docker / `docker compose` | **Still not verified** — Docker is not installed on this host (D-015, not waived). Phase 1 remains incomplete in Testing for this reason. |
 | Board | Phase 2 card: Backlog → To Do → In Progress (verified read-back). Phase 1 card left at Testing. |
 
