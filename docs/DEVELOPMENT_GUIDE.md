@@ -1,6 +1,6 @@
 # Development Guide
 
-**Status:** Phase 1 foundation merged to `develop` but incomplete in Testing (D-015); Phase 2 database architecture merged to `develop` as `3e0cd70` and Done; Phase 3 backend core architecture in progress on `feature/phase3-backend-core`. Flyway migrations, the development seed, database integrity tests, the `/api/v1` error contract, correlation-id logging, generated OpenAPI and health endpoints exist; identity, opportunity and application features are not yet implemented. Actual command results are in the [Phase 1](#phase-1-verification-record-2026-11-04), [Phase 2](#phase-2-verification-record-2026-11-07) and [Phase 3](#phase-3-verification-record-2026-11-08) verification records below.
+**Status:** Phase 1 foundation merged to `develop` but incomplete in Testing (D-015); Phase 2 database architecture and Phase 3 backend core architecture merged to `develop` (`3e0cd70`, `513f5b5`) and Done; Phase 4 authentication and authorization starting. Flyway migrations, the development seed, database integrity tests, the `/api/v1` error contract, correlation-id logging, generated OpenAPI and health endpoints exist; identity, opportunity and application features are not yet implemented. Actual command results are in the [Phase 1](#phase-1-verification-record-2026-11-04), [Phase 2](#phase-2-verification-record-2026-11-07) and [Phase 3](#phase-3-verification-record-2026-11-08) verification records below.
 
 ## Prerequisites
 
@@ -173,9 +173,9 @@ Actual results from the Phase 3 implementation host (Windows 11, Oracle JDK 25.0
 | `formatter:format` + `formatter:validate` (2.29.0) | Run before verify; 0 changes required. |
 | Dependency checks | `springdoc-openapi-starter-webmvc-ui:3.2.0` confirmed present in Maven Central metadata and documented for Spring Boot 4; `spring-boot-starter-validation` and `spring-boot-starter-actuator` resolved at 4.1.2. Boot 4 relocation handled: health classes now live in `org.springframework.boot.health.*`, and MockMvc test support moved to `spring-boot-starter-webmvc-test` (added test-scope). |
 | Honest record of failures fixed | First compile pass failed on the relocated `HealthEndpoint`/`Status` packages, `Enum::name` on Spring Framework 7's non-enum `HttpMethod`, an `HttpStatus` vs `HttpStatusCode` overload mismatch and a missing import — all fixed before tests ran. The first test run failed with no DB password (`.env` not loaded) and with Mockito unable to mock the sealed `HealthDescriptor` — both fixed; the table above is the post-fix state. |
-| CI | To be recorded when the pull request run completes. |
+| CI | GitHub Actions run [`42482770203`](https://github.com/felix202422/Tanzanian_Opportunities/actions/runs/42482770203) on PR #24, commit `4106ebd`: `Backend verification` **success** and `Frontend quality checks` **success**; `mergeable_state=clean`. PR merged by owner approval as `513f5b5`. |
 | Docker / `docker compose` | **Still not verified** — Docker is not installed on this host (D-015, not waived). Phase 1 remains incomplete in Testing for this reason. |
-| Board | Phase 3 card: Backlog → To Do → In Progress. Phase 1 card left at Testing; Phase 2 card Done. |
+| Board | Phase 3 card: Backlog → To Do → In Progress → Code Review → Testing → Done, each move with an evidence comment. Phase 1 card left at Testing; Phase 2 card Done. |
 
 New in this phase: `docs/API_CONTRACT.md` documents versioning, the endpoint table, the error-code table and examples, correlation/logging rules and the not-yet-implemented list. The contract is enforced by the four test classes above.
 
