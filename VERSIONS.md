@@ -10,7 +10,7 @@
 | --- | --- | --- |
 | Java JDK | 25 LTS | OpenJDK 25 reached GA on 2025-09-16 and is an LTS release for most vendors. CI uses Temurin 25; the local host has Oracle JDK 25.0.4.1. |
 | Spring Boot | 4.1.2 | Listed as stable; documented support is Java 17 through 27 and Spring Framework 7.0.10 or later. Java 25 is within the supported range. |
-| Springdoc OpenAPI | 3.2.0 | Current Springdoc documentation lists Spring Boot 4 and Java 17+ support. Use the MVC starter for the planned Spring MVC REST API. |
+| Springdoc OpenAPI | 3.2.0 | Current Springdoc documentation lists Spring Boot 4 and Java 17+ support. Use the MVC starter for the planned Spring MVC REST API. **Verified in Phase 3 (2026-11-08):** `springdoc-openapi-starter-webmvc-ui:3.2.0` resolves from Maven Central against Spring Boot 4.1.2, and the generated document plus Swagger UI are covered by `ApiContractTest`. |
 | Apache Maven / Wrapper plugin | 3.10.0 / 3.3.4 | Apache lists Maven 3.10.0 as its current recommended release; Maven 4.0.0-rc-7 is a preview. |
 | Java formatting | Formatter Maven Plugin 2.29.0 | Uses Eclipse JDT 3.43.0 with Java 25 compliance and LF line endings; validation runs during Maven `verify`. |
 | PostgreSQL / local image | 18.6 / `postgres:18.6-alpine` | Current minor release listed for supported major 18, supported through 2030-11-14. Official image metadata includes 18.6-alpine3.24. PostgreSQL 18 stores data under `/var/lib/postgresql/18/docker`; mount the volume at `/var/lib/postgresql`. |

@@ -16,3 +16,37 @@ spring:
 
 server:
   port: ${SERVER_PORT:8080}
+
+# --- API documentation (springdoc-openapi) -----------------------------------
+# The spec is generated from the live controllers under tz.tdop.api.v1 (see
+# docs/API_CONTRACT.md). Only our own API is documented; test fixtures are excluded.
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  packages-to-scan: tz.tdop.api
+  show-actuator: false
+
+# --- Operations endpoints (actuator) -----------------------------------------
+# Architecture baseline: expose only safe endpoints. Health (with Kubernetes-style
+# liveness/readiness groups) is the only one enabled; details are never shown by
+# default so component internals stay private.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      show-components: never
+      probes:
+        enabled: true
+
+# --- Logging -----------------------------------------------------------------
+# Every log line carries the request correlation id set by CorrelationIdFilter.
+# Tokens, passwords and personal data must never be logged (see API_CONTRACT.md).
+logging:
+  pattern:
+    correlation: "[${spring.application.name:tdop-api},%X{correlationId:-}] "
