@@ -4,7 +4,7 @@ TDOP is a planned bilingual platform for discovering, evaluating, publishing and
 
 ## Project status
 
-**Phase 2 — Database architecture in progress; Phase 1 merged but incomplete in Testing.** Phase 0 is marked complete by the project owner. The Phase 1 foundation was delivered through [PR #1](https://github.com/felix202422/Tanzanian_Opportunities/pull/1), owner-approved and merged to `develop` as `50766b3` with both CI jobs green, but it is **not Done**: the required `docker compose` startup check could not be run because Docker is not installed here, and the owner declined to waive it (see [D-015](docs/DECISIONS.md)), so its card stays in Testing on [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3). The owner then authorized starting Phase 2 while Phase 1 stays incomplete (see [D-016](docs/DECISIONS.md)); the Phase 2 card is In Progress and its work is under way. Backend/frontend scaffolds and quality tooling all pass locally. No opportunity, authentication or other product features are implemented yet.
+**Phase 3 — Backend core architecture in progress; Phase 2 Done; Phase 1 merged but incomplete in Testing.** Phase 0 is marked complete by the project owner. Phase 2 (database architecture) was owner-approved and merged to `develop` as `3e0cd70` through [PR #23](https://github.com/felix202422/Tanzanian_Opportunities/pull/23) with CI green, and its card is Done. Phase 3 is under way on `feature/phase3-backend-core`: the `/api/v1` error contract, correlation-id logging, request validation, generated OpenAPI (`/v3/api-docs` + Swagger UI) and health endpoints exist and are covered by tests (48 passing locally). The Phase 1 foundation was delivered through [PR #1](https://github.com/felix202422/Tanzanian_Opportunities/pull/1), owner-approved and merged to `develop` as `50766b3` with both CI jobs green, but it is **not Done**: the required `docker compose` startup check could not be run because Docker is not installed here, and the owner declined to waive it (see [D-015](docs/DECISIONS.md)), so its card stays in Testing on [TDOP — Development Roadmap](https://github.com/users/felix202422/projects/3). No opportunity, authentication or other product features are implemented yet.
 
 ## Objectives
 
@@ -69,11 +69,11 @@ Copy `.env.example` to `.env` for local services. The real `.env` is ignored by 
 
 ## Running and testing
 
-Run `./scripts/dev.ps1 check` on Windows or `make check` where Make is available. The backend context test and frontend lint, type-check, format and production build are configured. Docker Compose startup still needs validation on a host with Docker installed. No product/API features or related tests are claimed.
+Run `./scripts/dev.ps1 check` on Windows or `make check` where Make is available. The backend verification (48 tests at Phase 3: database, error contract, validation, health and OpenAPI) and frontend lint, type-check, format and production build are configured. Docker Compose startup still needs validation on a host with Docker installed. No product feature endpoints are claimed.
 
 ## API documentation
 
-The planned API prefix is `/api/v1`. OpenAPI documentation will be exposed by the backend after Phase 3; there is no live API or Swagger UI yet.
+The API prefix is `/api/v1`. Since Phase 3 the backend serves a generated OpenAPI 3 document at `/v3/api-docs` with Swagger UI at `/swagger-ui/index.html`, a versioned health endpoint at `GET /api/v1/health`, actuator health probes, and one documented error body for every failure — see [docs/API_CONTRACT.md](docs/API_CONTRACT.md). Product feature endpoints (opportunities, accounts, applications) do not exist yet; they arrive in their approved phases.
 
 ## Screenshots
 

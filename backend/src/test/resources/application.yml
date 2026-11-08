@@ -1,6 +1,10 @@
-# Test-classpath configuration. This file shadows src/main/resources/application.yml for
-# tests, so every Spring test talks to a dedicated test database and never to development
-# data. Credentials come from the environment only (D-017) and are never committed.
+# Test-classpath configuration. This file SHADOWS src/main/resources/application.yml
+# for tests (same resource name, test classpath wins), so every section that must behave
+# identically in tests and in the application has to be repeated here. When you change
+# the main file, check this one too.
+#
+# Tests talk to a dedicated test database and never to development data. Credentials
+# come from the environment only (D-017) and are never committed.
 spring:
   application:
     name: tdop-api
@@ -17,3 +21,28 @@ spring:
 
 server:
   port: 0
+
+# Mirrors the main application.yml (see the note at the top of this file).
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  packages-to-scan: tz.tdop.api
+  show-actuator: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      show-components: never
+      probes:
+        enabled: true
+
+logging:
+  pattern:
+    correlation: "[${spring.application.name:tdop-api},%X{correlationId:-}] "

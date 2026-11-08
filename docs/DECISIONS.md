@@ -16,7 +16,7 @@ Decisions below are planning baselines recorded on **2026-11-04**. The standalon
 | Spring Boot | 4.1.2 | Official system requirements: Java 17–27; Spring Framework 7.0.10+. Stable channel. |
 | Maven | Wrapper 3.10.0; wrapper plugin 3.3.4 | Apache lists 3.10.0 as current recommended; Maven 4.0.0-rc-7 is a preview and not selected. |
 | Java formatting | Formatter Maven Plugin 2.29.0 | Eclipse JDT formatter configured for Java 25 compliance and LF line endings. |
-| Springdoc OpenAPI | 3.2.0 | Current docs state support for Spring Boot 4 and Java 17+. Verify the chosen Spring MVC starter during backend scaffold. |
+| Springdoc OpenAPI | 3.2.0 | Current docs state support for Spring Boot 4 and Java 17+. **Verified during Phase 3:** the MVC starter `springdoc-openapi-starter-webmvc-ui:3.2.0` was confirmed in Maven Central and runs against Spring Boot 4.1.2. |
 | Spring Security, Hibernate, JUnit, Testcontainers and Flyway | Spring Boot 4.1.2 dependency management where possible | Avoid independent overrides; verify required Flyway PostgreSQL module and Testcontainers integration while scaffolding. |
 
 Sources: [OpenJDK JDK 25](https://openjdk.org/projects/jdk/25/), [Spring Boot requirements](https://docs.spring.io/spring-boot/system-requirements.html), [Apache Maven downloads](https://maven.apache.org/download.cgi), [Springdoc documentation](https://springdoc.org/).
@@ -101,3 +101,7 @@ This is a candidate compatibility matrix, not a tested lockfile. Phase 1 must cr
 ## D-017 — Database access for development and tests
 
 **Status:** Accepted 2026-11-04. Local development and integration tests run against the owner-supplied local PostgreSQL 18.6 instance on `127.0.0.1:5432`. Credentials are provided by the owner and are used **in memory only**: they are never written into the repository, documentation, logs or test output. Application and test configuration reads them from environment variables, and CI uses its own service-container credentials. Dedicated `tdop_dev` and `tdop_test` databases and a non-superuser role are used instead of the `postgres` superuser for day-to-day runs.
+
+## D-018 — One versioned error contract with correlation ids
+
+**Status:** Accepted in Phase 3 (2026-11-08), documented in [docs/API_CONTRACT.md](API_CONTRACT.md). Every failing request returns the same `ApiError` body (`code`, `title`, `status`, `detail`, `instance`, `correlationId`, `timestamp`, optional `fieldErrors`); clients branch on the stable `code`. HTTP status codes and error codes are produced in exactly one place, `GlobalExceptionHandler`. `500` bodies never contain exception messages, stack traces, SQL or class names — those go to the server log under the request's correlation id, which is also echoed in the response (`X-Correlation-Id`) and in the error body. Caller-supplied correlation ids are accepted only when they match `[A-Za-z0-9-]{1,64}`, otherwise replaced by a generated UUID, so log injection through the header is not possible. Actuator exposes `health` only, with `show-details: never`; API versioning is structural via the `/api/v1` path prefix applied to `tz.tdop.api.v1` controllers; springdoc scans only `tz.tdop.api`, so test fixtures never appear in the published document.

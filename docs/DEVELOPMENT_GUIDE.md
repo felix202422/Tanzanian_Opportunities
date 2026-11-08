@@ -1,6 +1,6 @@
 # Development Guide
 
-**Status:** Phase 1 foundation merged to `develop` after owner approval; Phase 2 database architecture is in progress on `feature/phase2-database-architecture`. Flyway migrations, the development seed and database integrity tests exist; HTTP API, identity and application features are not yet implemented. Actual command results are in the [Phase 1](#phase-1-verification-record-2026-11-04) and [Phase 2](#phase-2-verification-record-2026-11-07) verification records below.
+**Status:** Phase 1 foundation merged to `develop` but incomplete in Testing (D-015); Phase 2 database architecture merged to `develop` as `3e0cd70` and Done; Phase 3 backend core architecture in progress on `feature/phase3-backend-core`. Flyway migrations, the development seed, database integrity tests, the `/api/v1` error contract, correlation-id logging, generated OpenAPI and health endpoints exist; identity, opportunity and application features are not yet implemented. Actual command results are in the [Phase 1](#phase-1-verification-record-2026-11-04), [Phase 2](#phase-2-verification-record-2026-11-07) and [Phase 3](#phase-3-verification-record-2026-11-08) verification records below.
 
 ## Prerequisites
 
@@ -158,6 +158,26 @@ Actual results from the Phase 2 implementation host (Windows 11, Oracle JDK 25.0
 | Board | Phase 2 card: Backlog → To Do → In Progress (verified read-back). Phase 1 card left at Testing. |
 
 Local databases used (D-017): `tdop_dev` for development runs and `tdop_test` for tests, both owned by the non-superuser role `tdop_app`. Credentials live only in the gitignored `.env` / process environment; nothing was written into this repository. The orphaned pre-existing `tdop` database was left untouched by owner decision.
+
+## Phase 3 verification record (2026-11-08)
+
+Actual results from the Phase 3 implementation host (Windows 11, Oracle JDK 25.0.4.1, local PostgreSQL 18.6 service on `127.0.0.1:5432`):
+
+| Check | Result |
+| --- | --- |
+| `backend ./mvnw.cmd -B verify` | **BUILD SUCCESS** (exit 0). **Tests run: 48, Failures: 0, Errors: 0, Skipped: 0** — 23 Phase 2 tests plus 25 new Phase 3 tests. Boot jar produced. |
+| `GlobalExceptionHandlerTest` (7) | Validation failures carry every invalid field plus the MDC correlation id; a `500` built from an exception whose message contains a fake password returns `INTERNAL_ERROR` with **no** echo of the message, exception class or `password`; malformed-body errors never echo the raw fragment; `404`/`405`/`MISSING_PARAMETER` map to their documented codes and `405` lists supported methods. |
+| `HealthControllerTest` (3) | `UP` → `200 {"status":"UP"}`; `DOWN` and `OUT_OF_SERVICE` → `ResponseStatusException` with `503`. (Boot 4 sealed `HealthDescriptor`, so a test-only factory builds real descriptors — `TestHealthDescriptors` in the Boot package, test sources only.) |
+| `ApiContractTest` (11) | `GET /api/v1/health` → 200 `UP`; unversioned `/health` → `404 NOT_FOUND`; actuator exposes `health`, `liveness`, `readiness` (200 or 503) only — `/actuator/env`, `/actuator/beans`, `/actuator/health/all` → 404; documented error body for 404/405; correlation id echoed, generated as a UUID when absent, and replaced when hostile (`not a safe log value <script>`); `/v3/api-docs` returns OpenAPI 3 with title `Tanzania Digital Opportunity Platform API` and path `/api/v1/health`; Swagger UI served. |
+| `ValidationPipelineTest` (4) | Invalid DTO → `400 VALIDATION_FAILED` with 2 `fieldErrors`; valid DTO passes through; truncated JSON → `MALFORMED_REQUEST` without echoing the fragment; `application/xml` → `415 UNSUPPORTED_MEDIA_TYPE`. |
+| `formatter:format` + `formatter:validate` (2.29.0) | Run before verify; 0 changes required. |
+| Dependency checks | `springdoc-openapi-starter-webmvc-ui:3.2.0` confirmed present in Maven Central metadata and documented for Spring Boot 4; `spring-boot-starter-validation` and `spring-boot-starter-actuator` resolved at 4.1.2. Boot 4 relocation handled: health classes now live in `org.springframework.boot.health.*`, and MockMvc test support moved to `spring-boot-starter-webmvc-test` (added test-scope). |
+| Honest record of failures fixed | First compile pass failed on the relocated `HealthEndpoint`/`Status` packages, `Enum::name` on Spring Framework 7's non-enum `HttpMethod`, an `HttpStatus` vs `HttpStatusCode` overload mismatch and a missing import — all fixed before tests ran. The first test run failed with no DB password (`.env` not loaded) and with Mockito unable to mock the sealed `HealthDescriptor` — both fixed; the table above is the post-fix state. |
+| CI | To be recorded when the pull request run completes. |
+| Docker / `docker compose` | **Still not verified** — Docker is not installed on this host (D-015, not waived). Phase 1 remains incomplete in Testing for this reason. |
+| Board | Phase 3 card: Backlog → To Do → In Progress. Phase 1 card left at Testing; Phase 2 card Done. |
+
+New in this phase: `docs/API_CONTRACT.md` documents versioning, the endpoint table, the error-code table and examples, correlation/logging rules and the not-yet-implemented list. The contract is enforced by the four test classes above.
 
 ## Current environment note
 
